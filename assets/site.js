@@ -79,9 +79,23 @@
 
   // видео кейсов: играют, только пока видны; при «меньше движения» остаётся картинка
   if (!reduce) {
-    const vio = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) e.target.play().catch(() => {}); else e.target.pause(); }), { threshold: .25 });
+    const vio = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting && e.target.offsetParent) e.target.play().catch(() => {}); else e.target.pause(); }), { threshold: .25 });
     document.querySelectorAll('video[data-play]').forEach(el => vio.observe(el));
   }
+
+  // кейс: переключатель «Компьютер / Телефон» — видно одно видео, второе на паузе
+  document.querySelectorAll('.viewer').forEach(vw => {
+    const set = v => {
+      vw.dataset.view = v;
+      vw.querySelectorAll('[data-v]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.v === v)));
+      vw.querySelectorAll('video').forEach(el => {
+        const on = el.closest(v === 'phone' ? '.phone' : '.shot');
+        if (on && !reduce) { el.currentTime = 0; el.play().catch(() => {}); } else el.pause();
+      });
+    };
+    vw.querySelectorAll('[data-v]').forEach(b => b.addEventListener('click', () => set(b.dataset.v)));
+    if (matchMedia('(max-width:600px)').matches) set('phone');
+  });
 
   // заголовки и плашки появляются снизу
   const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { rootMargin: '0px 0px -12% 0px' });

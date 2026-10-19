@@ -12,6 +12,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import time
 from pathlib import Path
 
 import imageio_ffmpeg
@@ -26,6 +27,8 @@ SITES = {
 SIZES = {"": (1440, 900), "-m": (390, 844)}
 # сколько секунд срезать в начале: пока сайт грузится, кадр пустой
 TRIM = {"car-export": 2.0}
+# у кого есть плашка cookies: запись начинается после её закрытия, срезаем всё до него
+TRIM_AFTER_BANNER = {"ksenia": True}
 
 # Прокрутка по остановкам: доля высоты страницы и пауза на ней. Плавность — ease-in-out.
 SCROLL_JS = """
@@ -56,13 +59,20 @@ def record(browser, slug: str, url: str, suffix: str, size: tuple[int, int]) -> 
                               record_video_dir=str(tmp), record_video_size={"width": w, "height": h},
                               is_mobile=suffix == "-m", has_touch=suffix == "-m", locale="ru-RU")
     page = ctx.new_page()
+    t0 = time.monotonic()  # видео пишется с открытия страницы
+    trim = TRIM.get(slug, 0.6)
     page.goto(url, wait_until="networkidle")
     # плашка cookies: отказываемся — так она не закрывает сайт в видео
-    for text in ("Отказаться", "Только необходимые"):
-        btn = page.get_by_role("button", name=text)
-        if btn.count():
-            btn.first.click()
-            break
+    # плашка появляется после заставки — ждём её до 5 с
+    btn = page.get_by_role("button", name="Отказаться")
+    try:
+        btn.first.wait_for(state="visible", timeout=5000)
+        btn.first.click()
+        page.wait_for_timeout(700)
+        if TRIM_AFTER_BANNER.get(slug):
+            trim = time.monotonic() - t0
+    except Exception:
+        pass
     page.wait_for_timeout(2600)  # первый экран и его анимации
     stops = [0.14, 0.3, 0.46, 0.62, 0.8, 1.0]
     page.evaluate(SCROLL_JS, {"stops": stops, "pause": 900, "travel": 1500})
@@ -72,7 +82,7 @@ def record(browser, slug: str, url: str, suffix: str, size: tuple[int, int]) -> 
     out = OUT / f"{slug}{suffix}.mp4"
     # обрезаем начало (белый экран до загрузки) и кодируем в H.264
     subprocess.run([imageio_ffmpeg.get_ffmpeg_exe(), "-hide_banner", "-loglevel", "error", "-y",
-                    "-ss", str(TRIM.get(slug, 0.6)), "-i", str(video), "-c:v", "libx264", "-preset", "slow", "-crf", "22",
+                    "-ss", f"{trim:.2f}", "-i", str(video), "-c:v", "libx264", "-preset", "slow", "-crf", "22",
                     "-pix_fmt", "yuv420p", "-movflags", "+faststart", "-an", "-r", "30", str(out)], check=True)
     shutil.rmtree(tmp, ignore_errors=True)
     return out

@@ -387,9 +387,15 @@ CASES.forEach((c, i) => {
       label: `Кейс ${c.n}`, h1: c.title, lead: c.text,
       extra: `<div class="cmeta"><span>Клиент: <b>${c.client}</b></span><span>Сфера: <b>${c.sphere}</b></span><span>Формат: <b>${c.kind}</b></span></div>
     <div class="acts">${c.url ? ext(c.url, c.host, 'btn white') : ''}<a class="btn glass" href="${R}raboty/">Все работы</a></div>
-    <div class="cshots up" style="--tint:${c.tint}">
-      <div class="shot"><video src="${R}media/cases/${c.slug}.mp4" poster="${R}img/work/${c.img}.jpg" muted loop playsinline preload="none" data-play aria-label="Прокрутка сайта ${c.name} на компьютере"></video></div>
-      <div class="phone"><video src="${R}media/cases/${c.slug}-m.mp4" poster="${R}img/work/${c.img}-m.jpg" muted loop playsinline preload="none" data-play aria-label="Прокрутка сайта ${c.name} на телефоне"></video></div>
+    <div class="viewer up" data-view="desktop">
+      <div class="seg" role="group" aria-label="Как показать сайт">
+        <button type="button" data-v="desktop" aria-pressed="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg>Компьютер</button>
+        <button type="button" data-v="phone" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M11 18.5h2"/></svg>Телефон</button>
+      </div>
+      <div class="stage">
+        <div class="shot"><video src="${R}media/cases/${c.slug}.mp4" poster="${R}img/work/${c.img}.jpg" muted loop playsinline preload="none" data-play aria-label="Прокрутка сайта ${c.name} на компьютере"></video></div>
+        <div class="phone"><video src="${R}media/cases/${c.slug}-m.mp4" poster="${R}img/work/${c.img}-m.jpg" muted loop playsinline preload="none" data-play aria-label="Прокрутка сайта ${c.name} на телефоне"></video></div>
+      </div>
     </div>`,
     })}
 

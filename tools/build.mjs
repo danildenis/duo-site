@@ -162,6 +162,7 @@ const layout = ({ R, path, title, desc, body, home }) => `<!doctype html>
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600&display=swap">
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="${R}assets/site.css?v=${VER}">
 <script src="${R}assets/site.js?v=${VER}" defer></script>
@@ -267,7 +268,7 @@ page('', {
     </span>
     <span class="tag"><span>Vibe</span><span>Coding</span><span>Company</span></span>
   </h1>
-  <p class="hero-foot"><b>Сайты и Telegram-боты под ключ</b><br>Websites · Products · Automation</p>
+  <p class="hero-foot"><b>Сайты и Telegram-боты под ключ</b><span class="sub">Websites · Products · Automation</span></p>
 </section>
 
 <div class="sheet">

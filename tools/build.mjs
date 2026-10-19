@@ -133,7 +133,7 @@ const footer = R => `<footer class="foot dark" id="contacts">
       <p>Делаем сайты и Telegram-ботов для бизнеса. Напишите нам в Telegram или посчитайте стоимость в боте — ответим и подскажем, с чего начать.</p>
       <p class="legal"><a href="${R}privacy/">Политика обработки персональных данных</a></p>
     </div>
-    <div><h4>Разделы</h4><ul>${[['raboty/', 'Работы'], ['uslugi/', 'Услуги'], ['ceny/', 'Цены'], ['process/', 'Процесс'], ['voprosy/', 'Вопросы'], ['o-nas/', 'О нас'], ['zayavka/', 'Заявка']].map(([h, t]) => `<li><a href="${R}${h}">${t}</a></li>`).join('')}</ul></div>
+    <div><h4>Разделы</h4><ul>${[['raboty/', 'Работы'], ['uslugi/', 'Услуги'], ['ceny/', 'Цены'], ['process/', 'Процесс'], ['voprosy/', 'Вопросы'], ['razbor/', 'Разбор сайта'], ['o-nas/', 'О нас'], ['zayavka/', 'Заявка']].map(([h, t]) => `<li><a href="${R}${h}">${t}</a></li>`).join('')}</ul></div>
     <div><h4>Работы</h4><ul>${CASES.map(c => `<li><a href="${R}raboty/${c.slug}/">${c.client}</a></li>`).join('')}<li><a href="${R}raboty/#demo">Демо-сайты</a></li></ul></div>
     <div><h4>Связь</h4><ul><li><a href="${TG_APP}" target="_blank" rel="noopener">Приложение в Telegram</a></li><li><a href="https://t.me/duodevops_bot" target="_blank" rel="noopener">Бот @duodevops_bot</a></li><li><a href="https://t.me/duodevops" target="_blank" rel="noopener">Telegram-канал</a></li><li><a href="https://instagram.com/duo_devops" target="_blank" rel="noopener">Instagram</a></li></ul></div>
   </div>
@@ -281,6 +281,7 @@ page('', {
       <a class="tile up" href="${R}uslugi/#bots"><span class="label">02</span><h3>Telegram-боты</h3><p>Заявки, запись, каталог, оплата и рассылки — собираем из нужных функций</p><span class="p">от ${rub(BOT.base)} ${ARROW}</span></a>
       <a class="tile up" href="${R}uslugi/#support"><span class="label">03</span><h3>Поддержка</h3><p>Правки, обновления и помощь после запуска — для сайтов и ботов</p><span class="p">${rub(SITE.support)} в месяц ${ARROW}</span></a>
     </div>
+    <a class="teaser up" href="${R}razbor/"><div><b>Уже есть сайт? Бесплатно разберём его</b><span>Пришлите ссылку — ответим тремя конкретными улучшениями</span></div><span class="btn white">Получить разбор ${ARROW}</span></a>
     ${bar(R, 'Хотите узнать точную цену?', 'Посчитать стоимость')}
   </section>
 </div>
@@ -387,8 +388,8 @@ CASES.forEach((c, i) => {
       extra: `<div class="cmeta"><span>Клиент: <b>${c.client}</b></span><span>Сфера: <b>${c.sphere}</b></span><span>Формат: <b>${c.kind}</b></span></div>
     <div class="acts">${c.url ? ext(c.url, c.host, 'btn white') : ''}<a class="btn glass" href="${R}raboty/">Все работы</a></div>
     <div class="cshots up" style="--tint:${c.tint}">
-      <div class="shot"><img src="${R}img/work/${c.img}.jpg" alt="Сайт ${c.name} на компьютере"></div>
-      <div class="phone"><img src="${R}img/work/${c.img}-m.jpg" alt="Сайт ${c.name} на телефоне" loading="lazy"></div>
+      <div class="shot"><video src="${R}media/cases/${c.slug}.mp4" poster="${R}img/work/${c.img}.jpg" muted loop playsinline preload="none" data-play aria-label="Прокрутка сайта ${c.name} на компьютере"></video></div>
+      <div class="phone"><video src="${R}media/cases/${c.slug}-m.mp4" poster="${R}img/work/${c.img}-m.jpg" muted loop playsinline preload="none" data-play aria-label="Прокрутка сайта ${c.name} на телефоне"></video></div>
     </div>`,
     })}
 
@@ -510,6 +511,53 @@ page('zayavka/', {
 <div class="apply page" id="apply">
 ${FORM.replaceAll('{{R}}', R)}
 </div>
+</div>`,
+});
+
+page('razbor/', {
+  title: 'Бесплатный разбор сайта — duo',
+  desc: 'Пришлите ссылку на сайт — посмотрим его глазами клиента и ответим тремя конкретными улучшениями. Бесплатно.',
+  body: R => `${ptop({ label: 'Бесплатно', h1: 'Разбор <em>вашего сайта</em>', lead: 'Пришлите ссылку — посмотрим сайт глазами вашего клиента и ответим тремя конкретными улучшениями. Бесплатно и без обязательств.' })}
+
+<div class="sheet after">
+  <section class="wrap sec">
+    ${head('Что смотрим', 'Четыре вещи, <em>которые теряют заявки</em>')}
+    <div class="rows desc focus">
+      ${row('Первый экран', 'Понятно ли за несколько секунд, что вы предлагаете и для кого', null)}
+      ${row('Путь к заявке', 'Сколько шагов от первого экрана до звонка или сообщения и где человек может уйти', null)}
+      ${row('Телефон', 'Как сайт выглядит и работает на телефоне — многие заходят именно с него', null)}
+      ${row('Скорость', 'Как быстро открывается первый экран и что его тормозит', null)}
+    </div>
+
+    <div class="subhead up"><h3>Как это работает</h3></div>
+    <div class="rows">
+      ${row('<span class="num">01</span>Ссылка', 'Присылаете адрес сайта и как с вами связаться', '1 минута')}
+      ${row('<span class="num">02</span>Смотрим', 'Проходим сайт как ваш клиент — с компьютера и с телефона', 'сами')}
+      ${row('<span class="num">03</span>Ответ', 'Пишем три улучшения: что поправить и почему это важно', 'в Telegram или звонком')}
+    </div>
+
+    <div class="audit up" id="audit" style="margin-top:clamp(48px,6vw,80px)">
+      <div>
+        <span class="label" style="color:var(--t3)">Заявка на разбор</span>
+        <h3>Пришлите ссылку <em>на сайт</em></h3>
+        <p>Разбор бесплатный и ни к чему не обязывает. Если захотите исправить сами — исправите сами.</p>
+      </div>
+      <form id="auditForm" novalidate>
+        <p class="send-err" id="auditErr" role="alert"></p>
+        <label class="hp" aria-hidden="true">Не заполняйте это поле <input name="website" tabindex="-1" autocomplete="off"></label>
+        <label class="f"><span>Адрес сайта <b>*</b></span><input class="inp" name="url" inputmode="url" placeholder="example.ru" required><em class="err">Напишите адрес сайта</em></label>
+        <div class="grid2">
+          <label class="f"><span>Имя <b>*</b></span><input class="inp" name="name" autocomplete="name" placeholder="Как к вам обращаться" required><em class="err">Напишите имя</em></label>
+          <label class="f"><span>Telegram или телефон <b>*</b></span><input class="inp" name="contact" placeholder="@username или +7…" required><em class="err">Как с вами связаться</em></label>
+        </div>
+        <label class="f"><span>Что беспокоит <small>— необязательно</small></span><textarea class="inp" name="comment" placeholder="Например: мало заявок, неудобно с телефона"></textarea></label>
+        <div class="f" data-need="consent"><label class="check"><input type="checkbox" name="consent" value="да"> <span>Соглашаюсь на обработку персональных данных по <a href="${R}privacy/" target="_blank" rel="noopener">политике</a></span></label><em class="err">Без согласия мы не сможем принять заявку</em></div>
+        <button class="btn white" type="submit">Получить разбор ${ARROW}</button>
+      </form>
+      <div class="ok-msg"><h3>Спасибо, <em>ссылка у нас</em></h3><p>Посмотрим сайт и напишем вам выбранным способом.</p></div>
+    </div>
+    ${nextp(R, 'raboty/', 'Наши работы')}
+  </section>
 </div>`,
 });
 

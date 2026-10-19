@@ -463,3 +463,26 @@ textarea.inp{min-height:96px;resize:vertical;line-height:1.5}
 
 @media (max-width:860px){.demos{grid-template-columns:1fr}}
 @media (max-width:600px){.bar .acts{width:100%}.bar .acts .btn{flex:1;justify-content:center}}
+
+/* бесплатный разбор сайта: форма в тёмной карточке */
+.audit{position:relative;overflow:hidden;display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:clamp(28px,4vw,64px);padding:clamp(28px,4vw,56px);border-radius:var(--r);background:var(--bg);color:var(--t)}
+.audit::before{content:"";position:absolute;width:620px;height:620px;right:-220px;top:-340px;border-radius:50%;background:radial-gradient(circle,rgba(70,120,255,.42),rgba(55,135,220,.2) 30%,rgba(40,150,190,.07) 50%,transparent 70%);pointer-events:none}
+.audit>*{position:relative}
+.audit h3{margin:0 0 14px;font-weight:300;font-size:clamp(30px,3.4vw,46px);letter-spacing:-.03em;line-height:1.05}
+.audit h3 em{display:block;font-style:normal;color:var(--t3)}
+.audit p{margin:0;font-size:15px;line-height:1.6;color:var(--t2)}
+.audit .ok-msg{display:none}
+.audit.sent form{display:none}
+.audit.sent .ok-msg{display:block}
+.audit .btn{border:0;cursor:pointer;font-family:inherit}
+.audit .f{margin-bottom:16px}
+.teaser{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-top:16px;padding:22px 24px 22px 28px;border-radius:24px;background:var(--bg);color:var(--t)}
+.teaser b{display:block;font-weight:400;font-size:clamp(20px,2vw,26px);letter-spacing:-.02em}
+.teaser span{font-size:14px;color:var(--t2)}
+@media (max-width:860px){.audit{grid-template-columns:1fr}.teaser{flex-direction:column;align-items:flex-start}}
+
+/* видео кейсов */
+.shot video{position:absolute;left:0;top:30px;width:100%;height:calc(100% - 30px);object-fit:cover;object-position:top;background:#000}
+.cshots .shot{aspect-ratio:1440/930}
+.phone video{width:100%;height:100%;object-fit:cover;object-position:top;display:block}
+.cshots .phone{aspect-ratio:390/844}

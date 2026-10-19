@@ -77,9 +77,41 @@
   if (!reduce) { addEventListener('scroll', onScroll, { passive: true }); addEventListener('resize', () => { measure(); if (!stackMQ.matches) cases.forEach(c => { c.style.transform = ''; c.lastElementChild.style.opacity = ''; }); onScroll(); }); frame(); }
   else words.forEach(w => w.classList.add('on'));
 
+  // видео кейсов: играют, только пока видны; при «меньше движения» остаётся картинка
+  if (!reduce) {
+    const vio = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) e.target.play().catch(() => {}); else e.target.pause(); }), { threshold: .25 });
+    document.querySelectorAll('video[data-play]').forEach(el => vio.observe(el));
+  }
+
   // заголовки и плашки появляются снизу
   const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { rootMargin: '0px 0px -12% 0px' });
   document.querySelectorAll('.up').forEach(el => io.observe(el));
+
+  // ── бесплатный разбор сайта (/razbor/): ссылка и контакт → сервер бота → чат менеджеров ──
+  const audit = document.getElementById('auditForm');
+  if (audit) {
+    const box = document.getElementById('audit'), err = document.getElementById('auditErr'), btn = audit.querySelector('button[type=submit]');
+    audit.addEventListener('input', e => { e.target.classList.remove('bad'); e.target.closest('.f')?.classList.remove('bad'); });
+    audit.addEventListener('change', e => e.target.closest('.f')?.classList.remove('bad'));
+    audit.addEventListener('submit', async e => {
+      e.preventDefault();
+      let ok = true;
+      audit.querySelectorAll('[required]').forEach(el => { if (!el.value.trim()) { ok = false; el.classList.add('bad'); el.closest('.f')?.classList.add('bad'); } });
+      const c = audit.querySelector('[data-need]'); if (!c.querySelector('input:checked')) { ok = false; c.classList.add('bad'); }
+      if (!ok) return audit.querySelector('.bad .inp, .bad input')?.focus();
+      const d = Object.fromEntries(new FormData(audit));
+      btn.disabled = true; err.classList.remove('on');
+      try {
+        const res = await fetch('https://77-110-111-44.sslip.io/api/site-audit', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(d) });
+        const out = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(out.error || 'Заявка не отправилась');
+        box.classList.add('sent');
+      } catch (x) {
+        err.textContent = `${x instanceof TypeError ? 'Нет связи с сервером' : x.message}. Попробуйте ещё раз или напишите нам в Telegram.`;
+        err.classList.add('on');
+      } finally { btn.disabled = false; }
+    });
+  }
 
   // ── заявка: своя страница /zayavka/, 6 шагов и предварительный расчёт ──
   const form = document.getElementById('applyForm');

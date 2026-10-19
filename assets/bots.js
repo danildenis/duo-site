@@ -13,7 +13,7 @@
 
   const BOTS = {
     line: {
-      name: 'Линия · запись', letter: 'Л', color: '#C9A28C',
+      name: 'Линия · запись', letter: 'Л', color: '#C9A28C', tg: 'https://t.me/fgfgfgfgfg76_bot',
       start: 'hi',
       nodes: {
         hi: () => ({ text: 'Здравствуйте! Я бот студии бровей и ресниц «Линия» 🌿\nЗапишу вас за минуту — без звонков и переписок.', buttons: [[['Записаться', 'svc']], [['Цены', 'price'], ['Адрес', 'addr']]] }),
@@ -29,7 +29,7 @@
       features: [['Запись на дату и время', 6000], ['Напоминания клиентам', 2000]],
     },
     coffee: {
-      name: 'Зерно · заказ с собой', letter: 'З', color: '#B98B5E',
+      name: 'Зерно · заказ с собой', letter: 'З', color: '#B98B5E', tg: 'https://t.me/gkgkgkgk76_bot',
       start: 'hi',
       nodes: {
         hi: st => ((st.cart = st.cart || {}), { text: 'Привет! Это кофейня «Зерно» ☕\nЗакажите здесь — заберёте без очереди через 5 минут.', buttons: [[['Меню', 'menu']], [['Где вы?', 'addr']]] }),
@@ -67,7 +67,7 @@
     },
   };
 
-  const chat = root.querySelector('.tg-msgs'), head = root.querySelector('.tg-head'), feats = root.querySelector('.bot-feats');
+  const chat = root.querySelector('.tg-msgs'), head = root.querySelector('.tg-head'), feats = root.querySelector('.bot-feats'), live = root.querySelector('.bot-live');
   let bot, st, timer;
 
   function bubble(html, who) {
@@ -112,6 +112,7 @@
     head.querySelector('.av').textContent = bot.letter;
     head.querySelector('.av').style.background = bot.color;
     head.querySelector('.nm').textContent = bot.name;
+    if (live) { live.hidden = !bot.tg; if (bot.tg) live.href = bot.tg; }
     feats.innerHTML = bot.features.map(([n, p]) => `<li><span>${n}</span><b>${p ? '+' + rub(p) : 'в базе'}</b></li>`).join('');
     chat.innerHTML = '<div class="tg-day">Демо · бренд вымышлен</div>';
     say(bot.start);

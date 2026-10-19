@@ -18,7 +18,7 @@ const NEXT = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-
 // мини-приложение DUO в Telegram: открывается сразу, без чата с ботом
 const TG_APP = 'https://t.me/duodevops_bot?startapp';
 const SITE_URL = 'https://danildenis.github.io/duo-site/';
-const TG = '<svg class="tg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21.4 4.2 18.3 19c-.2 1-.9 1.3-1.7.8l-4.7-3.5-2.3 2.2c-.3.3-.5.5-1 .5l.3-4.8 8.8-8c.4-.3-.1-.5-.6-.2L6.3 12.8l-4.7-1.5c-1-.3-1-1 .2-1.5L20.1 2.7c.8-.3 1.6.2 1.3 1.5Z"/></svg>';
+const TG = '<svg class="tgi" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21.4 4.2 18.3 19c-.2 1-.9 1.3-1.7.8l-4.7-3.5-2.3 2.2c-.3.3-.5.5-1 .5l.3-4.8 8.8-8c.4-.3-.1-.5-.6-.2L6.3 12.8l-4.7-1.5c-1-.3-1-1 .2-1.5L20.1 2.7c.8-.3 1.6.2 1.3 1.5Z"/></svg>';
 const tgBtn = (cls = 'btn line', text = 'Открыть в Telegram') => `<a class="${cls}" href="${TG_APP}" target="_blank" rel="noopener">${TG} ${text}</a>`;
 const ext = (href, text, cls = 'btn glass') => `<a class="${cls}" href="${href}" target="_blank" rel="noopener">${text} ${ARROW}</a>`;
 const rub = n => n.toLocaleString('ru-RU').replace(/\s/g, ' ') + ' ₽';
@@ -376,12 +376,21 @@ page('raboty/', {
         <span class="label" style="color:var(--ink3)">Что внутри этого бота</span>
         <ul class="bot-feats"></ul>
         <p class="note">База любого бота — ${rub(BOT.base)}: меню, ответы на вопросы, заявки вам в Telegram. Функции добавляются по <a href="${R}ceny/#bots" style="text-decoration:underline;text-underline-offset:3px">прайсу</a>.</p>
+        <a class="btn bot-live" href="#" target="_blank" rel="noopener" style="margin-top:22px" hidden>${TG} Открыть этого бота в Telegram</a>
       </div>
-      <div class="tg up"><div class="tg-in">
-        <div class="tg-head"><span class="av"></span><div><span class="nm"></span><small>бот</small></div></div>
-        <div class="tg-msgs" aria-live="polite"></div>
-        <div class="tg-foot"><button type="button" class="tg-restart">↻ Начать заново</button></div>
-      </div></div>
+      <div class="tg-wrap up">
+        <div class="tg">
+          <i class="tg-btn tg-act"></i><i class="tg-btn tg-vol1"></i><i class="tg-btn tg-vol2"></i><i class="tg-btn tg-pwr"></i>
+          <div class="tg-in">
+            <div class="tg-status"><span>9:41</span><i class="tg-island"></i><span class="tg-ic"><svg viewBox="0 0 18 12" aria-hidden="true"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5.5" width="3" height="6.5" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg><svg viewBox="0 0 16 12" aria-hidden="true"><path d="M8 11.5 5.6 9a3.4 3.4 0 0 1 4.8 0L8 11.5Zm-4-4.1-1.5-1.5a7.8 7.8 0 0 1 11 0L12 7.4a5.7 5.7 0 0 0-8 0ZM.9 4.3-.6 2.8a12.2 12.2 0 0 1 17.2 0l-1.5 1.5a10 10 0 0 0-14.2 0Z"/></svg><b class="tg-bat"><i></i></b></span></div>
+            <div class="tg-head"><span class="tg-back">‹</span><div class="tg-title"><span class="nm"></span><small>бот</small></div><span class="av"></span></div>
+            <div class="tg-msgs" aria-live="polite"></div>
+            <div class="tg-input"><svg class="tg-clip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="m20 11.5-7.8 7.8a5 5 0 0 1-7.1-7.1l8.5-8.5a3.3 3.3 0 0 1 4.7 4.7l-8.5 8.5a1.7 1.7 0 0 1-2.4-2.4l7.8-7.8"/></svg><span class="tg-field">Сообщение</span><svg class="tg-mic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"/></svg></div>
+            <i class="tg-home"></i>
+          </div>
+        </div>
+        <button type="button" class="tg-restart">↻ Начать заново</button>
+      </div>
     </div>
   </section>
   <script src="${R}assets/bots.js?v=${VER}" defer></script>

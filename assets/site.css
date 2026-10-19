@@ -415,7 +415,7 @@ textarea.inp{min-height:96px;resize:vertical;line-height:1.5}
 .bar .acts{display:flex;flex-wrap:wrap;gap:10px}
 .btn.line{background:none;color:var(--ink);border:1px solid rgba(11,12,14,.22)}
 .btn.line:hover{border-color:var(--ink)}
-.btn .tg{width:17px;height:17px}
+.btn .tgi{width:17px;height:17px}
 .menu-m .tg-link{display:flex;align-items:center;gap:10px;color:var(--t)}
 .menu-m .tg-link svg{width:17px;height:17px}
 
@@ -535,3 +535,36 @@ textarea.inp{min-height:96px;resize:vertical;line-height:1.5}
 @keyframes msgin{from{opacity:0;translate:0 8px}to{opacity:1;translate:0 0}}
 @keyframes dot{0%,80%,100%{opacity:.3}40%{opacity:1}}
 @media (max-width:860px){.bots{grid-template-columns:1fr}.tg{height:580px;max-width:400px;width:100%;margin:0 auto}}
+.btn[hidden]{display:none}
+
+/* демо-боты: настоящий телефон (iPhone-подобная рамка, строка состояния, вырез, поле ввода) */
+.tg-wrap{display:flex;flex-direction:column;align-items:center;gap:16px}
+.tg{position:relative;width:352px;height:724px;border-radius:60px;padding:11px;
+  background:linear-gradient(150deg,#6b6d73 0%,#2a2b2f 18%,#1a1b1e 50%,#2c2d31 82%,#73757b 100%);
+  box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.18),inset 0 0 0 4px #0b0b0c,0 2px 0 1px rgba(0,0,0,.4),0 40px 90px rgba(11,12,14,.32)}
+.tg-btn{position:absolute;width:4px;border-radius:2px;background:linear-gradient(90deg,#3a3b3f,#7c7e84,#3a3b3f)}
+.tg-act{left:-3px;top:118px;height:30px}.tg-vol1{left:-3px;top:172px;height:58px}.tg-vol2{left:-3px;top:242px;height:58px}.tg-pwr{right:-3px;top:196px;height:92px}
+.tg-in{position:relative;height:100%;border-radius:49px;overflow:hidden;display:flex;flex-direction:column;
+  background:#0E1621 radial-gradient(rgba(255,255,255,.035) 1.2px,transparent 1.4px) 0 0/22px 22px;
+  box-shadow:0 0 0 3px #000;font-family:-apple-system,"SF Pro Text","Segoe UI",Roboto,Manrope,sans-serif}
+.tg-status{position:relative;flex:none;height:50px;display:flex;align-items:center;justify-content:space-between;padding:4px 30px 0 36px;color:#fff;font-size:15px;font-weight:600;background:#17212B}
+.tg-island{position:absolute;left:50%;top:11px;width:104px;height:30px;margin-left:-52px;border-radius:20px;background:#000}
+.tg-ic{display:flex;align-items:center;gap:6px}
+.tg-ic svg{width:17px;height:12px;fill:#fff}
+.tg-bat{position:relative;width:25px;height:12px;border:1.5px solid rgba(255,255,255,.55);border-radius:4px;padding:1.5px}
+.tg-bat::after{content:"";position:absolute;right:-4px;top:3px;width:2px;height:4px;border-radius:0 1px 1px 0;background:rgba(255,255,255,.55)}
+.tg-bat i{display:block;width:78%;height:100%;border-radius:1.5px;background:#fff}
+.tg .tg-head{flex:none;display:grid;grid-template-columns:40px 1fr 40px;align-items:center;gap:0;padding:4px 12px 10px;background:#17212B;border-bottom:1px solid rgba(0,0,0,.35)}
+.tg-back{color:#6AB2F2;font-size:34px;line-height:.8;font-weight:300}
+.tg-title{text-align:center;color:#fff;line-height:1.2}
+.tg-title .nm{font-size:15.5px;font-weight:600}
+.tg-title small{display:block;font-size:12.5px;color:#6D8399}
+.tg .tg-head .av{justify-self:end;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font-weight:600;color:#0E1621;font-size:15px}
+.tg .tg-msgs{background:transparent}
+.tg-input{flex:none;display:flex;align-items:center;gap:10px;padding:8px 12px 30px;background:#17212B;color:#6D8399}
+.tg-clip,.tg-mic{flex:none;width:24px;height:24px}
+.tg-field{flex:1;height:36px;border-radius:18px;background:#0E1621;display:flex;align-items:center;padding:0 14px;font-size:14.5px}
+.tg-home{position:absolute;left:50%;bottom:9px;width:128px;height:5px;margin-left:-64px;border-radius:3px;background:rgba(255,255,255,.75)}
+.tg-wrap .tg-restart{border:0;background:none;color:var(--ink2);font:inherit;font-size:14px;cursor:pointer}
+.tg-wrap .tg-restart:hover{color:var(--ink)}
+@media (max-width:860px){.tg{width:min(352px,92vw);height:auto;aspect-ratio:352/724;max-width:none;margin:0}}

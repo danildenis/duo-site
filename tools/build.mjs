@@ -149,6 +149,8 @@ const layout = ({ R, path, title, desc, body, home }) => `<!doctype html>
 <meta name="description" content="${desc}">
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#0B0C0E">
+<link rel="icon" href="${R}img/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="${R}img/apple-touch-icon.png">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="duo">
 <meta property="og:locale" content="ru_RU">

@@ -162,7 +162,8 @@ button{font:inherit;color:inherit;cursor:pointer}
 <script>
 (() => {
   const tg = window.Telegram?.WebApp;
-  const inTg = Boolean(tg && tg.initData);
+  // внутри Telegram: платформа известна (при запуске кнопкой клавиатуры initData бывает пустым)
+  const inTg = Boolean(tg && tg.platform && tg.platform !== 'unknown');
   if (inTg) { document.documentElement.classList.add('tg'); tg.ready(); tg.expand(); try { tg.setHeaderColor('#F6F1EC'); tg.setBackgroundColor('#F6F1EC'); } catch (_) {} }
   const rub = n => n.toLocaleString('ru-RU').replace(/\s/g, ' ') + ' ₽';
   const S = [
@@ -240,7 +241,8 @@ button{font:inherit;color:inherit;cursor:pointer}
     if (cur === 'done') {
       const s = S.find(x => x.id === st.s), m = M.find(x => x.id === st.m);
       const data = JSON.stringify({ s: s.id, svc: s.n, master: m.n, when: dayLabel(st.d) + ', ' + st.t, price: s.p, min: s.m, name: st.name });
-      if (inTg && tg.sendData && tg.initDataUnsafe?.query_id === undefined) { try { tg.sendData(data); return; } catch (_) {} }
+      // кнопка «Записаться» в чате → данные уходят боту (он пришлёт карточку записи); из меню — просто закрываем
+      if (inTg && !tg.initDataUnsafe?.query_id) { try { tg.sendData(data); return; } catch (_) {} }
       if (inTg) return tg.close();
       return go('home');
     }

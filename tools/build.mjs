@@ -10,7 +10,7 @@ import { fileURLToPath } from 'node:url';
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const read = p => readFileSync(join(ROOT, p), 'utf8');
 // версия файлов в адресе — чтобы после выкладки у всех открывалась свежая версия
-const VER = createHash('sha1').update(read('assets/site.css') + read('assets/site.js')).digest('hex').slice(0, 8);
+const VER = createHash('sha1').update(read('assets/site.css') + read('assets/site.js') + read('assets/bots.js')).digest('hex').slice(0, 8);
 const FORM = read('tools/parts/form.html');
 
 const ARROW = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 12 12 4M6 4h6v6"/></svg>';
@@ -134,7 +134,7 @@ const footer = R => `<footer class="foot dark" id="contacts">
       <p class="legal"><a href="${R}privacy/">Политика обработки персональных данных</a></p>
     </div>
     <div><h4>Разделы</h4><ul>${[['raboty/', 'Работы'], ['uslugi/', 'Услуги'], ['ceny/', 'Цены'], ['process/', 'Процесс'], ['voprosy/', 'Вопросы'], ['razbor/', 'Разбор сайта'], ['o-nas/', 'О нас'], ['zayavka/', 'Заявка']].map(([h, t]) => `<li><a href="${R}${h}">${t}</a></li>`).join('')}</ul></div>
-    <div><h4>Работы</h4><ul>${CASES.map(c => `<li><a href="${R}raboty/${c.slug}/">${c.client}</a></li>`).join('')}<li><a href="${R}raboty/#demo">Демо-сайты</a></li></ul></div>
+    <div><h4>Работы</h4><ul>${CASES.map(c => `<li><a href="${R}raboty/${c.slug}/">${c.client}</a></li>`).join('')}<li><a href="${R}raboty/#demo">Демо-сайты</a></li><li><a href="${R}raboty/#bots">Демо-боты</a></li></ul></div>
     <div><h4>Связь</h4><ul><li><a href="${TG_APP}" target="_blank" rel="noopener">Приложение в Telegram</a></li><li><a href="https://t.me/duodevops_bot" target="_blank" rel="noopener">Бот @duodevops_bot</a></li><li><a href="https://t.me/duodevops" target="_blank" rel="noopener">Telegram-канал</a></li><li><a href="https://instagram.com/duo_devops" target="_blank" rel="noopener">Instagram</a></li></ul></div>
   </div>
   <div class="endbar"><span>Websites · Products · Automation</span><b>duo</b><span>© 2026 · Два человека. Один результат.</span></div>
@@ -298,21 +298,10 @@ page('', {
 </section>
 
 <div class="sheet">
-  <section class="wrap sec" id="process">
-    ${head('Процесс', 'Как мы работаем <em>от заявки до запуска</em>', 'На каждом этапе показываем результат и согласуем с вами, прежде чем идти дальше.', more(`${R}process/`, 'Сроки и что понадобится от вас'))}
-    <div class="rows focus">
-      ${stepRows()}
-    </div>
-  </section>
-
   <section class="wrap sec" id="prices">
     ${head('Цены', 'Цена известна <em>до начала работы</em>', 'Платите один раз за готовый сайт, без подписки за конструктор.', more(`${R}ceny/`, 'Все цены на сайты и ботов'))}
     ${siteBase}
-  </section>
-
-  <section class="wrap sec" id="faq">
-    ${head('Вопросы', 'Частые <em>вопросы</em>', '', more(`${R}voprosy/`, 'Все вопросы и ответы'))}
-    ${faq(R, [FAQ[1], FAQ[2], FAQ[3]])}
+    <p class="note up">Как проходит работа — <a href="${R}process/" style="text-decoration:underline;text-underline-offset:3px">пять шагов от заявки до запуска</a>. Частые вопросы — <a href="${R}voprosy/" style="text-decoration:underline;text-underline-offset:3px">сроки, домен, правки</a>.</p>
   </section>
 
   <section class="wrap sec" id="about">
@@ -350,7 +339,7 @@ page('uslugi/', {
       ${row('Связь с CRM', 'amoCRM, Битрикс24, 1С', '+8 000 ₽')}
       ${row('Нейросеть', 'Ответы нейросетью на вопросы клиентов', 'от +10 000 ₽')}
     </div>
-    <p class="note">Сервер для бота оплачивается отдельно: ${BOT.server} в месяц.</p>
+    <p class="note">Сервер для бота оплачивается отдельно: ${BOT.server} в месяц. ${more(`${R}raboty/#bots`, 'Попробовать демо-ботов')}</p>
     ${bar(R, 'Нужен бот?', 'Рассказать о боте', 'zayavka/?type=bot')}
   </section>
 
@@ -377,7 +366,28 @@ page('raboty/', {
   <section class="wrap sec" id="demo">
     ${head('Демо-сайты', 'Как может выглядеть <em>ваш сайт</em>', 'Три демо в разных стилях и сферах. Бренды и данные в них вымышлены — это показ возможностей.')}
     ${demos(R)}
-    ${bar(R, 'Хотите сайт под свою задачу?')}
+  </section>
+
+  <section class="wrap sec" id="bots">
+    <div class="bots">
+      <div>
+        ${head('Демо-боты', 'Попробуйте <em>прямо здесь</em>', 'Нажимайте кнопки в чате — так бот работает в Telegram у ваших клиентов. Бренды вымышлены, ничего никуда не отправляется.')}
+        <div class="bot-tabs" role="group" aria-label="Какой бот"><button type="button" data-bot="line">Запись в студию</button><button type="button" data-bot="coffee">Заказ в кофейне</button><button type="button" data-bot="talky">Онлайн-школа</button></div>
+        <span class="label" style="color:var(--ink3)">Что внутри этого бота</span>
+        <ul class="bot-feats"></ul>
+        <p class="note">База любого бота — ${rub(BOT.base)}: меню, ответы на вопросы, заявки вам в Telegram. Функции добавляются по <a href="${R}ceny/#bots" style="text-decoration:underline;text-underline-offset:3px">прайсу</a>.</p>
+      </div>
+      <div class="tg up"><div class="tg-in">
+        <div class="tg-head"><span class="av"></span><div><span class="nm"></span><small>бот</small></div></div>
+        <div class="tg-msgs" aria-live="polite"></div>
+        <div class="tg-foot"><button type="button" class="tg-restart">↻ Начать заново</button></div>
+      </div></div>
+    </div>
+  </section>
+  <script src="${R}assets/bots.js?v=${VER}" defer></script>
+
+  <section class="wrap sec">
+    ${bar(R, 'Хотите сайт или бота под свою задачу?')}
     ${nextp(R, 'uslugi/', 'Услуги')}
   </section>
 </div>`,

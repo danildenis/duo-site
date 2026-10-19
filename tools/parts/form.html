@@ -1,0 +1,135 @@
+  <form class="panel" id="applyForm" data-home="{{R}}" aria-labelledby="applyTitle" novalidate>
+    <div class="p-top"><span class="label" id="applyTitle">Заявка · <span id="stepNo">1 из 6</span></span><button class="x" type="button" data-close aria-label="Закрыть"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 1l12 12M13 1 1 13"/></svg></button></div>
+    <div class="prog" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    <div class="p-body">
+
+      <section class="step on" data-step="1">
+        <h3 tabindex="-1">Что делаем? <em>Посчитаем сразу</em></h3>
+        <p class="sub">Выберите, что нужно. Цена пересчитывается на ходу, точную назовём после брифа.</p>
+        <div class="f"><span>Проект <b>*</b></span><div class="chips">
+          <label class="chip"><input type="radio" name="type" value="Сайт" checked><span>Сайт</span></label>
+          <label class="chip"><input type="radio" name="type" value="Telegram-бот"><span>Telegram-бот</span></label>
+          <label class="chip"><input type="radio" name="type" value="Сайт и бот"><span>Сайт и бот</span></label>
+          <label class="chip"><input type="radio" name="type" value="Пока не знаю"><span>Пока не знаю</span></label></div></div>
+        <div class="site-only">
+          <div class="f"><span>Сколько страниц <small>— до трёх входят в базу</small></span>
+            <div class="stepper"><button type="button" data-pages="-1" aria-label="Меньше страниц">−</button><output id="pagesOut">3 страницы</output><button type="button" data-pages="1" aria-label="Больше страниц">+</button></div>
+            <input type="hidden" name="pages" value="3"></div>
+          <div class="f"><span>Опции</span><div class="chips">
+            <label class="chip"><input type="checkbox" name="opt" value="design"><span>Уникальный дизайн <small>+1 000 ₽/стр.</small></span></label>
+            <label class="chip"><input type="checkbox" name="opt" value="appear"><span>Появление блоков <small>+500 ₽/стр.</small></span></label>
+            <label class="chip"><input type="checkbox" name="opt" value="buttons"><span>Анимированные кнопки <small>+1 000 ₽</small></span></label>
+            <label class="chip"><input type="checkbox" name="opt" value="plates"><span>Анимированные плашки <small>+1 500 ₽</small></span></label>
+            <label class="chip"><input type="checkbox" name="opt" value="trans"><span>Переходы <small>+2 000 ₽</small></span></label>
+            <label class="chip"><input type="checkbox" name="opt" value="texts"><span>Тексты от нас <small>+500 ₽/стр.</small></span></label>
+            <label class="chip"><input type="checkbox" name="opt" value="pay"><span>Онлайн-оплата <small>+6 000 ₽</small></span></label>
+            <label class="chip"><input type="checkbox" name="opt" value="admin"><span>Админка <small>+8 000 ₽</small></span></label>
+            <label class="chip"><input type="checkbox" name="opt" value="seo"><span>Базовое SEO <small>+2 000 ₽</small></span></label>
+            <label class="chip"><input type="checkbox" name="opt" value="urgent"><span>Срочно, 5–9 дней <small>+25%</small></span></label>
+            <label class="chip"><input type="checkbox" name="opt" value="support"><span>Поддержка <small>1 500 ₽/мес.</small></span></label></div></div>
+        </div>
+        <div class="est"><div class="sum"><small>Предварительно</small><span id="estSum">10 000 ₽</span></div><p id="estNote">Домен и хостинг оплачиваются отдельно, настройку берём на себя.</p></div>
+      </section>
+
+      <section class="step" data-step="2">
+        <h3 tabindex="-1">О вашем <em>бизнесе</em></h3>
+        <p class="sub">Пара фраз, как рассказали бы другу. Этого хватит, чтобы начать.</p>
+        <label class="f"><span>Название <b>*</b></span><input class="inp" name="biz" placeholder="Например, «Студия Ивановой»" required><em class="err">Напишите название</em></label>
+        <label class="f"><span>Чем вы занимаетесь <b>*</b></span><textarea class="inp" name="about" placeholder="Что продаёте или какие услуги оказываете" required></textarea><em class="err">Пара слов о том, чем вы занимаетесь</em></label>
+        <div class="grid2">
+          <label class="f"><span>Город</span><input class="inp" name="city" placeholder="Город или регион"></label>
+          <label class="f"><span>Ссылки</span><input class="inp" name="links" placeholder="Соцсети, карты, старый сайт"></label>
+        </div>
+        <label class="check"><input type="checkbox" name="online" value="да"> Работаем онлайн по всей стране</label>
+      </section>
+
+      <section class="step" data-step="3">
+        <h3 tabindex="-1">Клиенты <em>и цель сайта</em></h3>
+        <p class="sub">Под это строим структуру: что человек видит первым и куда нажимает.</p>
+        <label class="f"><span>Кто ваши клиенты <b>*</b></span><textarea class="inp" name="clients" placeholder="Возраст, чем занимаются, что для них важно" required></textarea><em class="err">Опишите, кто к вам приходит</em></label>
+        <div class="f" data-need="goal"><span>Главное действие на сайте <b>*</b></span><div class="chips">
+          <label class="chip"><input type="radio" name="goal" value="Оставить заявку"><span>Оставить заявку</span></label>
+          <label class="chip"><input type="radio" name="goal" value="Записаться на время"><span>Записаться на время</span></label>
+          <label class="chip"><input type="radio" name="goal" value="Купить или оплатить"><span>Купить или оплатить</span></label>
+          <label class="chip"><input type="radio" name="goal" value="Написать или позвонить"><span>Написать или позвонить</span></label>
+          <label class="chip"><input type="radio" name="goal" value="Узнать о нас и доверять"><span>Узнать о нас</span></label></div><em class="err">Выберите одно действие</em></div>
+        <div class="f"><span>Что должно быть на сайте <small>— остальное предложим сами</small></span><div class="chips">
+          <label class="chip"><input type="checkbox" name="blocks" value="Услуги и цены"><span>Услуги и цены</span></label>
+          <label class="chip"><input type="checkbox" name="blocks" value="О вас или команде"><span>О вас</span></label>
+          <label class="chip"><input type="checkbox" name="blocks" value="Работы"><span>Работы</span></label>
+          <label class="chip"><input type="checkbox" name="blocks" value="Отзывы"><span>Отзывы</span></label>
+          <label class="chip"><input type="checkbox" name="blocks" value="Вопросы и ответы"><span>Вопросы и ответы</span></label>
+          <label class="chip"><input type="checkbox" name="blocks" value="Контакты и карта"><span>Контакты и карта</span></label>
+          <label class="chip"><input type="checkbox" name="blocks" value="Запись онлайн"><span>Запись онлайн</span></label>
+          <label class="chip"><input type="checkbox" name="blocks" value="Акции"><span>Акции</span></label></div></div>
+      </section>
+
+      <section class="step" data-step="4">
+        <h3 tabindex="-1">Стиль <em>и материалы</em></h3>
+        <p class="sub">Лучше всего помогают примеры: покажите, что нравится, и мы поймём ваш вкус.</p>
+        <label class="f"><span>2–3 сайта, которые нравятся <b>*</b></span><textarea class="inp" name="likes" placeholder="Ссылки любой сферы и что именно в них нравится" required></textarea><em class="err">Хотя бы один пример</em></label>
+        <label class="f"><span>Чего точно не хотите</span><input class="inp" name="avoid" placeholder="Цвета, приёмы, примеры"></label>
+        <div class="f" data-max="3"><span>Ощущение от сайта <small>— до трёх слов</small></span><div class="chips">
+          <label class="chip"><input type="checkbox" name="mood" value="строгий"><span>строгий</span></label>
+          <label class="chip"><input type="checkbox" name="mood" value="тёплый"><span>тёплый</span></label>
+          <label class="chip"><input type="checkbox" name="mood" value="дорогой"><span>дорогой</span></label>
+          <label class="chip"><input type="checkbox" name="mood" value="дружелюбный"><span>дружелюбный</span></label>
+          <label class="chip"><input type="checkbox" name="mood" value="яркий"><span>яркий</span></label>
+          <label class="chip"><input type="checkbox" name="mood" value="минималистичный"><span>минималистичный</span></label>
+          <label class="chip"><input type="checkbox" name="mood" value="экспертный"><span>экспертный</span></label>
+          <label class="chip"><input type="checkbox" name="mood" value="спокойный"><span>спокойный</span></label>
+          <label class="chip"><input type="checkbox" name="mood" value="смелый"><span>смелый</span></label></div></div>
+        <div class="grid2">
+          <div class="f"><span>Логотип</span><div class="chips">
+            <label class="chip"><input type="radio" name="logo" value="есть"><span>Есть</span></label>
+            <label class="chip"><input type="radio" name="logo" value="нет"><span>Нет</span></label>
+            <label class="chip"><input type="radio" name="logo" value="нужно сделать"><span>Нужно сделать</span></label></div></div>
+          <div class="f"><span>Свои фото</span><div class="chips">
+            <label class="chip"><input type="radio" name="photos" value="есть"><span>Есть</span></label>
+            <label class="chip"><input type="radio" name="photos" value="мало"><span>Мало</span></label>
+            <label class="chip"><input type="radio" name="photos" value="нет"><span>Нет</span></label></div></div>
+        </div>
+      </section>
+
+      <section class="step" data-step="5">
+        <h3 tabindex="-1">Сроки <em>и детали</em></h3>
+        <p class="sub">Подскажите, к какой дате нужен сайт, и мы скажем, успеваем ли к ней.</p>
+        <div class="grid2">
+          <label class="f"><span>Нужен к дате <b>*</b></span><input class="inp" type="date" name="date" required><em class="err">Выберите дату</em></label>
+          <label class="f"><span>Почему к ней</span><input class="inp" name="why" placeholder="Открытие, сезон, акция"></label>
+        </div>
+        <div class="f"><span>Есть ли домен</span><div class="chips">
+          <label class="chip"><input type="radio" name="domain" value="есть"><span>Есть</span></label>
+          <label class="chip"><input type="radio" name="domain" value="нет, поможете выбрать"><span>Нет, помогите выбрать</span></label></div></div>
+        <label class="f"><span>Комментарий</span><textarea class="inp" name="comment" placeholder="Всё, что не вошло выше"></textarea></label>
+      </section>
+
+      <section class="step" data-step="6">
+        <h3 tabindex="-1">Куда <em>вам ответить</em></h3>
+        <p class="sub">Оставьте контакты, и мы напишем вам удобным способом.</p>
+        <label class="f"><span>Имя <b>*</b></span><input class="inp" name="name" autocomplete="name" placeholder="Как к вам обращаться" required><em class="err">Напишите имя</em></label>
+        <div class="grid2">
+          <label class="f"><span>Телефон <b>*</b></span><input class="inp" type="tel" name="phone" autocomplete="tel" placeholder="+7 900 000-00-00" required><em class="err">Проверьте номер</em></label>
+          <label class="f"><span>Почта <b>*</b></span><input class="inp" type="email" name="email" autocomplete="email" placeholder="name@mail.ru" required><em class="err">Проверьте почту</em></label>
+        </div>
+        <div class="f"><span>Как удобнее связаться</span><div class="chips">
+          <label class="chip"><input type="radio" name="contact" value="Telegram" checked><span>Telegram</span></label>
+          <label class="chip"><input type="radio" name="contact" value="Звонок"><span>Звонок</span></label>
+          <label class="chip"><input type="radio" name="contact" value="WhatsApp"><span>WhatsApp</span></label></div></div>
+        <div class="f" data-need="consent"><label class="check"><input type="checkbox" name="consent" value="да"> Соглашаюсь на обработку персональных данных</label><em class="err">Без согласия мы не сможем принять заявку</em></div>
+      </section>
+
+      <section class="step" data-step="done">
+        <div class="done">
+          <div class="ok"><svg width="26" height="26" viewBox="0 0 26 26" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 13.5 10.5 19 21 7"/></svg></div>
+          <h3>Спасибо, <em>заявка у нас</em></h3>
+          <p class="sub" style="margin:10px auto 0;max-width:420px">Изучим ответы и напишем вам удобным способом.</p>
+          <div class="card" id="doneCard"></div>
+        </div>
+      </section>
+    </div>
+    <div class="p-foot">
+      <span class="hint" id="hint">Ответы сохраняются в этом браузере</span>
+      <div class="acts"><button class="back" type="button" id="back">Назад</button><button class="btn white next" type="submit" id="next">Дальше <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M3 8h10M9 4l4 4-4 4"/></svg></button></div>
+    </div>
+  </form>

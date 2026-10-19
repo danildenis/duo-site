@@ -9,326 +9,8 @@
 <meta name="theme-color" content="#0B0C0E">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600&display=swap" rel="stylesheet">
-<style>
-/* duo · сайт студии. Стиль v2: графит, свечение синий→бирюзовый, стекло, Manrope.
-   Подача по референсу greymac.com: чёрная рамка, «вырез» с логотипом раскрывается в меню,
-   светлый лист наезжает на первый экран, текст проявляется при прокрутке, работы ложатся стопкой. */
-:root{
-  --bg:#0B0C0E; --black:#000;
-  --t:#F2F3F5; --t2:rgba(242,243,245,.64); --t3:rgba(242,243,245,.5); --line-d:rgba(242,243,245,.12);
-  --paper:#E9EBEF; --ink:#0B0C0E; --ink2:rgba(11,12,14,.7); --ink3:rgba(11,12,14,.56); --line:rgba(11,12,14,.1);
-  --acc:#6E96FF;
-  --f:"Manrope","Helvetica Neue",Arial,sans-serif;
-  --fw:10px; --r:28px;
-  --gut:clamp(20px,4.4vw,64px);
-  --ease:cubic-bezier(.16,1,.3,1);
-}
-*{box-sizing:border-box}
-html{color-scheme:dark;scroll-behavior:smooth}
-body{margin:0;background:var(--black);color:var(--t);font-family:var(--f);-webkit-font-smoothing:antialiased;overflow-x:hidden}
-a{color:inherit;text-decoration:none}
-img{display:block;max-width:100%}
-:focus-visible{outline:2px solid var(--acc);outline-offset:4px;border-radius:8px}
-.sheet :focus-visible{outline-color:var(--ink)}
-.label{font-size:13px;font-weight:500;letter-spacing:.09em;text-transform:uppercase}
-.wrap{width:min(1180px,100%);margin-inline:auto;padding-inline:var(--gut)}
-
-/* ── рамка экрана ── */
-.frame{position:fixed;inset:0;z-index:60;pointer-events:none}
-.frame::before{content:"";position:absolute;inset:var(--fw);border-radius:var(--r);box-shadow:0 0 0 80px var(--black)}
-
-/* ── «вырез» с логотипом: при наведении раскрывается в меню.
-   Двигаются только готовые слои (transform и opacity): две половины чёрной плашки выезжают из-под центра,
-   уголки едут вместе с ними. Ни раскладки, ни перерисовки на кадр ── */
-.notch{--w:min(760px,calc(100vw - 2*var(--fw) - 48px));--c:150px;--h:calc(48px + var(--fw));--sh:calc((var(--w) - var(--c)) / 2);
-  position:fixed;z-index:70;top:0;left:50%;width:var(--w);margin-left:calc(var(--w) / -2);height:var(--h);padding-top:var(--fw);
-  display:flex;align-items:center;pointer-events:none;opacity:0;animation:fade .9s ease 1.3s forwards}
-.notch .side{position:absolute;top:0;height:var(--h);overflow:hidden;pointer-events:none}
-.notch .side.l{left:-22px;right:calc(50% - 1px)}
-.notch .side.r{left:calc(50% - 1px);right:-22px}
-.notch .wing{position:absolute;top:0;height:100%;width:calc(var(--w) / 2 + 1px);background:var(--black);
-  transition:transform .6s var(--ease) .12s;will-change:transform;backface-visibility:hidden}
-.notch .l .wing{right:0;border-radius:0 0 0 24px;transform:translate3d(var(--sh),0,0)}
-.notch .r .wing{left:0;border-radius:0 0 24px 0;transform:translate3d(calc(-1 * var(--sh)),0,0)}
-.notch .ear{position:absolute;top:var(--fw);width:22px;height:22px}
-.notch .l .ear{left:-22px;background:radial-gradient(circle at 0 100%,transparent 21.5px,var(--black) 22px)}
-.notch .r .ear{right:-22px;background:radial-gradient(circle at 100% 100%,transparent 21.5px,var(--black) 22px)}
-.notch .hit{position:absolute;top:0;bottom:-12px;left:calc(50% - var(--c) / 2 - 12px);right:calc(50% - var(--c) / 2 - 12px);pointer-events:auto}
-.notch .home{position:relative;z-index:2;display:block;width:44px;height:23px;flex:none;margin-inline:auto;background:url(img/logo-white.svg) center/contain no-repeat;opacity:.92;pointer-events:auto;transition:transform .5s var(--ease)}
-.notch nav{position:absolute;top:var(--fw);bottom:0;display:flex;align-items:center;gap:clamp(18px,2.4vw,34px);font-size:14px;color:var(--t2);white-space:nowrap;
-  opacity:0;pointer-events:none;transition:opacity .2s ease,transform .45s var(--ease);will-change:opacity,transform}
-.notch nav.l{right:calc(50% + 22px + clamp(18px,2.4vw,34px));transform:translate3d(20px,0,0)}
-.notch nav.r{left:calc(50% + 22px + clamp(18px,2.4vw,34px));transform:translate3d(-20px,0,0)}
-.notch nav a{padding:8px 0;transition:color .25s}
-.notch nav a:hover{color:var(--t)}
-.notch.open .wing{transform:none;transition-delay:0s}
-.notch.open .hit{left:0;right:0}
-.notch.open nav{opacity:1;transform:none;pointer-events:auto;transition:opacity .35s ease .14s,transform .55s var(--ease) .08s}
-@media (hover:hover) and (min-width:601px){
-  .notch:hover .wing,.notch:focus-within .wing{transform:none;transition-delay:0s}
-  .notch:hover .hit,.notch:focus-within .hit{left:0;right:0}
-  .notch:hover nav,.notch:focus-within nav{opacity:1;transform:none;pointer-events:auto;transition:opacity .35s ease .14s,transform .55s var(--ease) .08s}
-}
-.notch .burger{display:none}
-/* сенсорные экраны и телефон: меню по нажатию, рядом со знаком значок из двух линий */
-@media (hover:none),(max-width:600px){
-  .notch .hit{display:none}
-  .notch .home{transform:translateX(-13px)}
-  .notch .burger{display:block;position:absolute;z-index:3;top:0;height:var(--h);left:calc(50% - var(--c) / 2);width:var(--c);background:none;border:0;padding:0;cursor:pointer;pointer-events:auto;-webkit-tap-highlight-color:transparent}
-  .notch .burger i{position:absolute;left:calc(50% + 22px);width:16px;height:1.5px;border-radius:1px;background:var(--t2);transition:transform .4s var(--ease)}
-  .notch .burger i:first-child{top:calc(var(--fw) + 20px)}
-  .notch .burger i:last-child{top:calc(var(--fw) + 26px)}
-  .notch.open .burger i:first-child{transform:translateY(3px) rotate(45deg)}
-  .notch.open .burger i:last-child{transform:translateY(-3px) rotate(-45deg)}
-  .notch nav.l{right:calc(50% + var(--c) / 2 + 6px)}
-  .notch nav.r{left:calc(50% + var(--c) / 2 + 6px)}
-}
-
-/* ── первый экран ── */
-.hero{position:sticky;top:0;height:100svh;min-height:560px;overflow:hidden;border-radius:var(--r);display:grid;place-items:center;background:var(--bg);z-index:0;will-change:transform,opacity}
-.light{position:absolute;inset:0;z-index:0}
-.light i{position:absolute;border-radius:50%;opacity:0;animation:bloom 3s var(--ease) 0s forwards;will-change:transform,opacity}
-.light .a{width:62vmax;height:62vmax;left:50%;top:50%;translate:-30% -62%;background:radial-gradient(circle,rgba(70,120,255,.5) 0%,rgba(62,128,240,.36) 18%,rgba(48,140,210,.2) 38%,rgba(40,150,190,.08) 55%,transparent 70%)}
-.light .b{width:48vmax;height:48vmax;left:50%;top:50%;translate:-78% -18%;background:radial-gradient(circle,rgba(40,150,190,.36) 0%,rgba(48,140,210,.22) 22%,rgba(70,120,255,.08) 48%,transparent 70%);animation-delay:.35s}
-.light::after{content:"";position:absolute;inset:0;
-  background:repeating-linear-gradient(90deg,rgba(255,255,255,.045) 0 1px,transparent 1px 22px,rgba(0,0,0,.18) 22px 23px,transparent 23px 46px);
-  -webkit-mask-image:radial-gradient(ellipse 60% 55% at 50% 48%,#000 30%,transparent 75%);mask-image:radial-gradient(ellipse 60% 55% at 50% 48%,#000 30%,transparent 75%);
-  opacity:0;animation:fade 1.6s ease .9s forwards}
-.grain{position:absolute;inset:0;z-index:1;pointer-events:none;opacity:.06;mix-blend-mode:overlay;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
-.hero-in{position:relative;display:flex;flex-direction:column;align-items:center;gap:clamp(18px,2.4vw,34px);padding-inline:var(--gut);margin:0}
-.logo{position:relative;display:block;width:min(54vw,760px);aspect-ratio:2743/1403;opacity:.86;mix-blend-mode:screen}
-.logo video,.logo img{position:absolute;left:-4.67%;top:-16.19%;width:109.34%;height:auto;pointer-events:none}
-.logo img{opacity:0;transition:opacity 1.2s var(--ease)}
-.hero.still .logo img{opacity:1}
-.hero.still .logo video{display:none}
-.hero.wait *,.hero.wait *::before,.hero.wait *::after,body.wait .notch{animation-play-state:paused!important}
-.tag{display:flex;gap:.6em;font-size:clamp(13px,1.35vw,19px);letter-spacing:.32em;text-transform:uppercase;color:var(--t2)}
-.tag span{opacity:0;translate:0 14px;filter:blur(6px);animation:word 1s var(--ease) forwards}
-.tag span:nth-child(1){animation-delay:2.9s}.tag span:nth-child(2){animation-delay:3.02s}.tag span:nth-child(3){animation-delay:3.14s}
-.hero-foot{position:absolute;z-index:3;left:0;right:0;bottom:calc(34px + var(--fw));text-align:center;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--t3);line-height:1.9;opacity:0;animation:fade 1s ease 3.1s forwards}
-.hero-foot b{display:block;margin-bottom:4px;font-weight:400;font-size:clamp(16px,1.4vw,18px);letter-spacing:0;text-transform:none;color:var(--t2)}
-@keyframes bloom{from{opacity:0;scale:.6}to{opacity:1;scale:1}}
-@keyframes fade{to{opacity:1}}
-@keyframes word{to{opacity:1;translate:0 0;filter:blur(0)}}
-
-/* ── светлый лист ── */
-.sheet{position:relative;z-index:2;background:var(--paper);color:var(--ink);border-radius:var(--r);overflow:hidden;
-  background-image:linear-gradient(180deg,#EEF0F3,#E4E6EA)}
-.sheet+.sheet{margin-top:0}
-.sec{padding-block:clamp(84px,11vw,150px)}
-.sec+.sec{padding-top:0}
-.sheet>.sec:last-child{padding-bottom:clamp(64px,7vw,100px)}
-.head{max-width:720px;margin-bottom:clamp(36px,5vw,64px)}
-.head .label{color:var(--ink2)}
-.dark .head .label{color:var(--t3)}
-h2{font-weight:300;font-size:clamp(36px,5vw,68px);line-height:1.02;letter-spacing:-.03em;margin:.35em 0 .4em;text-wrap:balance}
-h2 em{display:block;font-style:normal;color:var(--ink3)}
-.dark h2 em{color:var(--t3)}
-.lead{font-size:clamp(16px,1.35vw,18px);line-height:1.6;color:var(--ink2);max-width:640px;margin:0}
-.dark .lead{color:var(--t2)}
-
-/* вступление: слова проявляются при прокрутке */
-.intro{padding-block:clamp(110px,15vw,200px) clamp(40px,5vw,72px);text-align:center}
-.intro .label{color:var(--ink2)}
-.reveal{font-weight:300;font-size:clamp(26px,3.3vw,46px);line-height:1.22;letter-spacing:-.025em;max-width:980px;margin:28px auto 0}
-.reveal span{color:var(--ink);opacity:.24;transition:opacity .5s ease}
-.reveal span.on{opacity:1}
-
-/* строки списков: подсвечивается та, что в центре экрана */
-.rows{border-top:1px solid var(--line)}
-.row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr) 190px;gap:24px;align-items:center;padding:clamp(22px,2.6vw,34px) 0;border-bottom:1px solid var(--line);transition:opacity .5s ease}
-.rows.focus .row{opacity:.8}
-.rows.focus .row.on,.rows.focus .row:hover{opacity:1}
-.row .n{font-weight:400;font-size:clamp(22px,2.4vw,32px);letter-spacing:-.02em}
-.row .d{font-size:15px;line-height:1.5;color:var(--ink2)}
-.row .p{font-size:15px;font-weight:500;white-space:nowrap;text-align:right}
-.row .p small{display:block;font-weight:400;font-size:13px;color:var(--ink2)}
-.row .num{font-size:13px;color:var(--ink2);font-weight:500;letter-spacing:.08em;margin-right:14px;vertical-align:.35em}
-
-/* плашка с кнопкой */
-.bar{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-top:clamp(36px,4vw,56px);padding:16px 16px 16px 28px;border-radius:24px;
-  background:rgba(255,255,255,.55);border:1px solid rgba(255,255,255,.8);box-shadow:0 10px 30px rgba(11,12,14,.06)}
-.bar{padding:24px 24px 24px 32px}
-.bar>span{font-size:clamp(22px,2.2vw,30px);font-weight:300;letter-spacing:-.02em;line-height:1.2}
-.bar .alt{font-style:normal;font-size:14px;letter-spacing:0;font-weight:400;margin-top:8px;color:var(--ink2)}
-.btn{display:inline-flex;align-items:center;gap:10px;height:48px;padding:0 20px 0 22px;border-radius:18px;background:var(--ink);color:var(--t);font-size:14px;font-weight:500;white-space:nowrap;transition:transform .3s var(--ease),background .3s}
-.btn:hover{transform:translateY(-2px)}
-.btn svg{width:16px;height:16px}
-.btn.white{background:var(--t);color:var(--ink)}
-.btn.glass{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);color:var(--t)}
-
-/* ── работы: карточки ложатся стопкой ── */
-.work{position:relative;z-index:2;background:var(--bg);border-radius:var(--r);padding-block:clamp(70px,9vw,120px) clamp(40px,5vw,80px)}
-.dark{color:var(--t)}
-.cases{display:flex;flex-direction:column;gap:clamp(20px,3vw,40px);width:min(1320px,100% - 2*var(--fw) - 16px);margin-inline:auto}
-.case{position:sticky;top:calc(var(--fw) + 70px);height:min(80svh,680px);border-radius:var(--r);overflow:hidden;transform-origin:50% 0;will-change:transform;
-  display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.4fr);gap:clamp(24px,4vw,64px);align-items:center;padding:clamp(24px,4vw,56px);
-  background:#111216;border:1px solid var(--line-d)}
-.case::before{content:"";position:absolute;width:70%;aspect-ratio:1;right:-20%;top:-45%;border-radius:50%;background:radial-gradient(circle,var(--tint) 0%,transparent 62%);opacity:.4;pointer-events:none}
-.case .info{position:relative;display:flex;flex-direction:column;gap:22px}
-.case h3{margin:0;font-weight:300;font-size:clamp(38px,4.6vw,72px);line-height:.98;letter-spacing:-.035em}
-.case h3 em{font-style:normal;color:var(--t2)}
-.case p{margin:0;font-size:16px;line-height:1.55;color:var(--t2)}
-.meta{display:flex;flex-wrap:wrap;gap:8px 22px;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--t3)}
-.meta b{font-weight:500;color:var(--t)}
-.case .open{align-self:flex-start}
-.shot{position:relative;width:100%;aspect-ratio:1600/1030;max-height:100%;border-radius:18px;overflow:hidden;background:#000;border:1px solid rgba(255,255,255,.1);box-shadow:0 30px 80px rgba(0,0,0,.5)}
-.shot::before{content:"";position:absolute;z-index:1;left:0;right:0;top:0;height:30px;background:rgba(20,21,24,.92);border-bottom:1px solid rgba(255,255,255,.06)}
-.shot::after{content:"";position:absolute;z-index:2;left:14px;top:11px;width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.22);box-shadow:14px 0 0 rgba(255,255,255,.22),28px 0 0 rgba(255,255,255,.22)}
-.shot img{position:absolute;left:0;top:30px;width:100%;height:calc(100% - 30px);object-fit:cover;object-position:left top;transition:transform 1.2s var(--ease)}
-.case:hover .shot img{transform:scale(1.03)}
-.work .head{margin-inline:0}
-.case>.dim{position:absolute;inset:0;z-index:5;background:#000;opacity:0;pointer-events:none;will-change:opacity}
-
-/* о нас */
-.team{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:clamp(32px,5vw,80px);align-items:center}
-.photo{position:relative;aspect-ratio:3/4;border-radius:24px;overflow:hidden;background:#cfd2d8}
-.photo img{position:absolute;inset:-8% 0;width:100%;height:116%;object-fit:cover;will-change:transform}
-.people .row{grid-template-columns:minmax(0,.8fr) minmax(0,1.4fr)}
-
-/* цены */
-.base{display:grid;grid-template-columns:auto 1fr;gap:clamp(24px,4vw,64px);align-items:center;padding:clamp(28px,3.4vw,44px);border-radius:26px;background:var(--bg);color:var(--t);margin-bottom:clamp(28px,3vw,40px);position:relative;overflow:hidden}
-.base::before{content:"";position:absolute;width:520px;height:520px;right:-160px;top:-260px;border-radius:50%;background:radial-gradient(circle,rgba(70,120,255,.45),rgba(55,135,220,.22) 30%,rgba(40,150,190,.08) 50%,transparent 70%)}
-.base>*{position:relative}
-.base .sum{font-weight:300;font-size:clamp(54px,7vw,104px);line-height:.9;letter-spacing:-.04em}
-.base .sum small{display:block;font-size:13px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;color:var(--t3);margin-bottom:14px}
-.base ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:14px 40px;font-size:16px;color:var(--t2)}
-.base li{padding-left:20px;position:relative}
-.base li::before{content:"";position:absolute;left:0;top:.62em;width:8px;height:1px;background:rgba(242,243,245,.4)}
-
-/* подвал */
-.foot{position:relative;z-index:2;background:var(--bg);border-radius:var(--r) var(--r) 0 0;padding:clamp(56px,7vw,96px) 0 calc(var(--fw) + 18px)}
-.foot-grid{display:grid;grid-template-columns:minmax(0,1.4fr) repeat(3,minmax(0,.6fr));gap:32px}
-.foot .mk{width:64px;height:33px;background:url(img/logo-white.svg) center/contain no-repeat;margin-bottom:22px}
-.foot p{margin:0;font-size:15px;line-height:1.6;color:var(--t2);max-width:420px}
-.foot h4{margin:0 0 16px;font-size:12px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--t3)}
-.foot ul{list-style:none;margin:0;padding:0;display:grid;gap:0;font-size:14px;color:var(--t2)}
-.foot a:hover{color:var(--t)}
-.foot ul a{display:inline-block;padding:6px 0}
-.endbar{margin:clamp(40px,5vw,64px) calc(var(--fw) + 8px) 0;padding:18px 26px;border-radius:20px;background:#0f1013;border:1px solid var(--line-d);display:flex;justify-content:space-between;align-items:center;gap:16px;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--t3)}
-.endbar b{font-weight:500;color:var(--t);text-transform:none;letter-spacing:0;font-size:15px}
-
-/* появление при прокрутке */
-.up{opacity:0;translate:0 28px;transition:opacity 1s var(--ease),translate 1s var(--ease)}
-.up.in{opacity:1;translate:0 0}
-
-@media (max-width:860px){
-  .row{grid-template-columns:1fr;gap:8px}
-  .row .p{text-align:left}
-  .team{grid-template-columns:1fr}
-  .photo{aspect-ratio:4/5}
-  .base{grid-template-columns:1fr}
-  .base ul{grid-template-columns:1fr}
-  .foot-grid{grid-template-columns:1fr 1fr}
-  .foot-grid>div:first-child{grid-column:1/-1}
-  .bar{flex-direction:column;align-items:flex-start;padding:22px}
-  .case{position:relative;top:auto;height:auto;min-height:0;grid-template-columns:1fr;align-items:start;will-change:auto}
-  .shot{aspect-ratio:9/12;max-height:none}
-  .row{grid-template-columns:1fr}
-  .case h3{font-size:clamp(34px,9vw,52px)}
-}
-@media (max-width:600px){
-  :root{--fw:6px;--r:22px}
-  .logo{width:78vw}
-  .tag{letter-spacing:.24em}
-  .notch{--w:calc(100vw - 2*var(--fw) - 32px);--c:132px}
-  .notch nav{display:none}
-  .endbar{flex-direction:column;align-items:flex-start}
-  .light::after{opacity:.4;background:repeating-linear-gradient(90deg,rgba(255,255,255,.045) 0 1px,transparent 1px 14px,rgba(0,0,0,.18) 14px 15px,transparent 15px 30px)}
-}
-
-/* ── заявка: окно поверх сайта, 6 шагов, расчёт цены. Отправка не подключена ── */
-.apply{position:fixed;inset:0;z-index:80;display:grid;place-items:center;padding:calc(var(--fw) + 14px);visibility:hidden;pointer-events:none}
-.apply.open{visibility:visible;pointer-events:auto}
-.apply .shade{position:absolute;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(14px);opacity:0;transition:opacity .5s ease}
-.apply.open .shade{opacity:1}
-.panel{position:relative;width:min(760px,100%);max-height:100%;display:flex;flex-direction:column;border-radius:var(--r);background:#0E0F12;border:1px solid var(--line-d);
-  box-shadow:0 40px 120px rgba(0,0,0,.6);overflow:hidden;color:var(--t);translate:0 40px;opacity:0;transition:translate .7s var(--ease),opacity .4s ease}
-.apply.open .panel{translate:0 0;opacity:1}
-.panel::before{content:"";position:absolute;width:520px;height:520px;right:-180px;top:-300px;border-radius:50%;background:radial-gradient(circle,rgba(70,120,255,.4),rgba(55,135,220,.2) 30%,rgba(40,150,190,.07) 50%,transparent 70%);pointer-events:none}
-.p-top{position:relative;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:22px 26px 0}
-.p-top .label{color:var(--t3)}
-.x{width:40px;height:40px;border-radius:14px;border:1px solid var(--line-d);background:rgba(255,255,255,.04);color:var(--t2);display:grid;place-items:center;cursor:pointer}
-.x:hover{color:var(--t)}
-.prog{position:relative;display:flex;gap:6px;padding:16px 26px 0}
-.prog i{flex:1;height:3px;border-radius:2px;background:rgba(242,243,245,.12);overflow:hidden}
-.prog i::after{content:"";display:block;height:100%;width:0;background:var(--acc);transition:width .6s var(--ease)}
-.prog i.fill::after{width:100%}
-.p-body{position:relative;flex:1;overflow-y:auto;padding:26px 26px 8px;overscroll-behavior:contain}
-.step{display:none}
-.step.on{display:block;animation:stepin .6s var(--ease)}
-@keyframes stepin{from{opacity:0;translate:24px 0}to{opacity:1;translate:0 0}}
-.step h3{margin:0 0 12px;outline:none;font-weight:300;font-size:clamp(28px,3.4vw,40px);letter-spacing:-.03em;line-height:1.05}
-.step h3 em{font-style:normal;color:var(--t3)}
-.step .sub{margin:0 0 26px;font-size:15px;line-height:1.55;color:var(--t2)}
-.f{display:block;margin-bottom:22px}
-.f>span{display:block;font-size:13px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--t3);margin-bottom:10px}
-.f>span b{color:var(--t3);font-weight:500}
-.f>span small{text-transform:none;letter-spacing:0;font-weight:400;color:var(--t3)}
-.inp{width:100%;font:inherit;font-size:16px;color:var(--t);background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:18px;padding:15px 18px;outline:none;transition:border-color .25s,background .25s}
-.inp::placeholder{color:rgba(242,243,245,.5)}
-.inp:focus{border-color:rgba(110,150,255,.7);background:rgba(255,255,255,.07)}
-textarea.inp{min-height:96px;resize:vertical;line-height:1.5}
-.inp.bad{border-color:rgba(255,120,120,.7)}
-.err{display:none;margin-top:8px;font-size:13px;font-style:normal;color:#ff9a9a}
-.f.bad .err{display:block}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:0 16px}
-.chips{display:flex;flex-wrap:wrap;gap:8px}
-.chip{position:relative}
-.chip input{position:absolute;opacity:0;pointer-events:none}
-.chip span{display:inline-flex;align-items:center;gap:8px;min-height:42px;padding:9px 15px;border-radius:16px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);font-size:14px;color:var(--t2);cursor:pointer;transition:all .25s}
-.chip span small{font-size:12px;color:var(--t3)}
-.chip:hover span{border-color:rgba(255,255,255,.24);color:var(--t)}
-.chip input:checked+span{border-color:var(--acc);background:rgba(110,150,255,.14);color:var(--t)}
-.chip input:checked+span small{color:rgba(242,243,245,.7)}
-.chip input:focus-visible+span{outline:2px solid var(--acc);outline-offset:3px}
-.stepper{display:inline-flex;align-items:center;gap:4px;padding:4px;border-radius:18px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04)}
-.stepper button{width:42px;height:42px;border-radius:14px;border:0;background:rgba(255,255,255,.06);color:var(--t);font-size:20px;cursor:pointer}
-.stepper button:hover{background:rgba(255,255,255,.12)}
-.stepper output{min-width:110px;text-align:center;font-size:15px}
-.est{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin:6px 0 22px;padding:20px 22px;border-radius:22px;background:rgba(255,255,255,.04);border:1px solid var(--line-d)}
-.est .sum{font-weight:300;font-size:clamp(36px,4.4vw,52px);letter-spacing:-.035em;line-height:1}
-.est .sum small{display:block;font-size:12px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;color:var(--t3);margin-bottom:10px}
-.est p{margin:0;max-width:260px;font-size:13px;line-height:1.5;color:var(--t3);text-align:right}
-.check{display:flex;gap:12px;align-items:flex-start;font-size:14px;line-height:1.5;color:var(--t2);cursor:pointer}
-.check input{appearance:none;flex:none;width:22px;height:22px;margin:1px 0 0;border-radius:7px;border:1px solid rgba(255,255,255,.24);background:rgba(255,255,255,.04);display:grid;place-items:center;cursor:pointer}
-.check input:checked{background:var(--acc);border-color:var(--acc)}
-.check input:checked::after{content:"";width:10px;height:6px;border:2px solid #0B0C0E;border-top:0;border-right:0;rotate:-45deg;translate:0 -1px}
-.p-foot{position:relative;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 26px 22px;border-top:1px solid var(--line-d);background:rgba(14,15,18,.9)}
-.p-foot .hint{font-size:13px;color:var(--t3)}
-.p-foot .acts{display:flex;gap:10px}
-.back{height:48px;padding:0 18px;border-radius:18px;border:1px solid var(--line-d);background:none;color:var(--t2);font:inherit;font-size:14px;cursor:pointer}
-.back:hover{color:var(--t)}
-.next{border:0;cursor:pointer;font-family:inherit}
-.done{text-align:center;padding:30px 0 20px}
-.done .ok{width:64px;height:64px;margin:0 auto 22px;border-radius:50%;border:1px solid rgba(110,150,255,.6);display:grid;place-items:center;color:var(--acc)}
-.done .card{margin:26px auto 0;max-width:460px;text-align:left;padding:18px 20px;border-radius:20px;background:rgba(255,255,255,.04);border:1px solid var(--line-d);font-size:14px;line-height:1.7;color:var(--t2)}
-.done .card b{color:var(--t);font-weight:500}
-.alt{display:block;margin-top:10px;font-size:13px;color:var(--ink3)}
-.alt a{text-decoration:underline;text-underline-offset:3px}
-@media (max-width:600px){
-  .apply{padding:0;place-items:end center}
-  .panel{border-radius:24px 24px 0 0;max-height:96svh;height:96svh}
-  .grid2{grid-template-columns:1fr}
-  .est{flex-direction:column;align-items:flex-start}.est p{text-align:left}
-  .p-foot .hint{display:none}.p-foot{justify-content:flex-end}
-  .site-only .chips{display:grid;grid-template-columns:1fr 1fr}
-  .site-only .chip span{width:100%;height:100%;flex-direction:column;align-items:flex-start;justify-content:center;gap:2px;line-height:1.3}
-}
-.menu-m{position:absolute;left:0;right:0;top:calc(100% - 26px);display:grid;padding:30px 18px 18px;background:var(--black);border-radius:0 0 24px 24px;font-size:17px;
-  opacity:0;visibility:hidden;transform:translate3d(0,-8px,0);pointer-events:none;transition:opacity .25s ease,transform .45s var(--ease),visibility 0s linear .45s}
-.notch.open .menu-m{opacity:1;visibility:visible;transform:none;pointer-events:auto;transition:opacity .25s ease .12s,transform .45s var(--ease) .12s,visibility 0s}
-.menu-m a{padding:13px 4px;border-top:1px solid var(--line-d);color:var(--t2)}
-.menu-m a:first-child{border-top:0}
-.menu-m .btn{margin-top:12px;justify-content:center;border-top:0;color:var(--ink)}
-@media (min-width:601px){.menu-m{display:none}}
-@media (prefers-reduced-motion:reduce){
-  *,*::before,*::after{animation-duration:.01ms!important;animation-delay:0s!important;transition-duration:.01ms!important}
-  .up{opacity:1;translate:0 0}
-  .reveal span{opacity:1}
-}
-</style>
+<link rel="stylesheet" href="./assets/site.css?v=db400401">
+<script src="./assets/site.js?v=db400401" defer></script>
 </head>
 <body class="wait">
 <div class="frame" aria-hidden="true"></div>
@@ -337,17 +19,16 @@ textarea.inp{min-height:96px;resize:vertical;line-height:1.5}
   <span class="side l" aria-hidden="true"><span class="wing"><i class="ear"></i></span></span>
   <span class="side r" aria-hidden="true"><span class="wing"><i class="ear"></i></span></span>
   <span class="hit" aria-hidden="true"></span>
-  <nav class="l" aria-label="Разделы"><a href="#work">Работы</a><a href="#services">Услуги</a><a href="#prices">Цены</a></nav>
-  <a class="home" href="#top" aria-label="duo — наверх"></a>
-  <nav class="r" aria-label="Разделы"><a href="#process">Процесс</a><a href="#about">О нас</a><a href="#contacts">Контакты</a></nav>
+  <nav class="l" aria-label="Разделы"><a href="./raboty/">Работы</a><a href="./uslugi/">Услуги</a><a href="./ceny/">Цены</a></nav>
+  <a class="home" href="./" aria-label="duo — на главную"></a>
+  <nav class="r" aria-label="Разделы"><a href="./process/">Процесс</a><a href="./o-nas/">О нас</a><a href="./zayavka/">Заявка</a></nav>
   <button class="burger" type="button" aria-label="Меню" aria-expanded="false"><i></i><i></i></button>
-  <div class="menu-m"><a href="#work">Работы</a><a href="#services">Услуги</a><a href="#prices">Цены</a><a href="#process">Процесс</a><a href="#about">О нас</a><a href="#contacts">Контакты</a><a class="btn white" href="#apply" data-apply>Оставить заявку</a></div>
+  <div class="menu-m"><a href="./" aria-current="page">Главная</a><a href="./raboty/">Работы</a><a href="./uslugi/">Услуги</a><a href="./ceny/">Цены</a><a href="./process/">Процесс</a><a href="./o-nas/">О нас</a><a class="btn white" href="./zayavka/">Оставить заявку</a></div>
 </header>
 
 <main>
 <section class="hero wait" id="top">
-  <div class="light" aria-hidden="true"><i class="a"></i><i class="b"></i></div>
-  <div class="grain" aria-hidden="true"></div>
+  <div class="light" aria-hidden="true"><i class="a"></i><i class="b"></i></div><div class="grain" aria-hidden="true"></div>
   <h1 class="hero-in">
     <span class="logo" role="img" aria-label="duo">
       <video id="logoVideo" muted playsinline autoplay preload="auto" aria-hidden="true">
@@ -371,54 +52,50 @@ textarea.inp{min-height:96px;resize:vertical;line-height:1.5}
     <div class="head up">
       <span class="label">Услуги</span>
       <h2>Что мы делаем <em>для вашего бизнеса</em></h2>
-      <p class="lead">Собираем сайт из того, что нужно именно вам. Базу и каждую опцию видно заранее, без скрытых платежей.</p>
+      <p class="lead">Базу и каждую опцию видно заранее, без скрытых платежей.</p>
     </div>
-    <div class="rows focus">
-      <div class="row"><span class="n">Сайт под ключ</span><span class="d">До 3 страниц, адаптив под телефон, настройка домена и хостинга, форма заявки в Telegram</span><span class="p">от 10 000 ₽</span></div>
-      <div class="row"><span class="n">Уникальный дизайн</span><span class="d">Под ваш бренд и характер, без шаблонов и конструкторов</span><span class="p">+1 000 ₽<small>за страницу</small></span></div>
-      <div class="row"><span class="n">Анимации</span><span class="d">Кнопки, плашки, появление блоков, переходы между экранами</span><span class="p">от 500 ₽</span></div>
-      <div class="row"><span class="n">Оплата и админка</span><span class="d">Приём оплаты на сайте и панель, где вы сами меняете содержимое</span><span class="p">+6 000 / +8 000 ₽</span></div>
-      <div class="row"><span class="n">Тексты и SEO</span><span class="d">Напишем тексты за вас и настроим базовое SEO, чтобы сайт находили</span><span class="p">от 500 ₽</span></div>
-      <div class="row"><span class="n">Telegram-боты</span><span class="d">Цену называем после короткого брифа. Пример — наш бот @duodevops_bot: считает стоимость сайта и принимает заявки</span><span class="p">под задачу</span></div>
-      <div class="row"><span class="n">Поддержка</span><span class="d">Правки, обновления и помощь после запуска</span><span class="p">1 500 ₽<small>в месяц</small></span></div>
+    <div class="tiles">
+      <a class="tile up" href="./uslugi/#sites"><span class="label">01</span><h3>Сайты под ключ</h3><p>Дизайн под ваш бренд, адаптив под телефон, домен, хостинг и заявки в Telegram</p><span class="p">от 10 000 ₽ <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 12 12 4M6 4h6v6"/></svg></span></a>
+      <a class="tile up" href="./uslugi/#bots"><span class="label">02</span><h3>Telegram-боты</h3><p>Заявки, запись, каталог, оплата и рассылки — собираем из нужных функций</p><span class="p">от 10 000 ₽ <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 12 12 4M6 4h6v6"/></svg></span></a>
+      <a class="tile up" href="./uslugi/#support"><span class="label">03</span><h3>Поддержка</h3><p>Правки, обновления и помощь после запуска — для сайтов и ботов</p><span class="p">1 500 ₽ в месяц <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 12 12 4M6 4h6v6"/></svg></span></a>
     </div>
-    <div class="bar up"><span>Хотите узнать точную цену?<em class="alt">или посчитайте в боте <a href="https://t.me/duodevops_bot" target="_blank" rel="noopener">@duodevops_bot</a></em></span><a class="btn" href="#apply" data-apply>Посчитать стоимость <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 12 12 4M6 4h6v6"/></svg></a></div>
+    <div class="bar up"><span>Хотите узнать точную цену?<em class="alt">или напишите в бота <a href="https://t.me/duodevops_bot" target="_blank" rel="noopener">@duodevops_bot</a></em></span><a class="btn" href="./zayavka/">Посчитать стоимость <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 12 12 4M6 4h6v6"/></svg></a></div>
   </section>
 </div>
 
 <section class="work dark" id="work">
   <div class="wrap"><div class="head up">
-    <span class="label">Работы</span>
-    <h2>Сайты, которые <em>мы сделали</em></h2>
-    <p class="lead">Каждый собран под конкретную задачу клиента: свой стиль, своя структура и понятный путь к заявке.</p>
-  </div></div>
+      <span class="label">Работы</span>
+      <h2>Сайты, которые <em>мы сделали</em></h2>
+      <p class="lead">Каждый собран под конкретную задачу клиента: свой стиль, своя структура и понятный путь к заявке.</p>
+    </div></div>
   <div class="cases">
     <article class="case" style="--tint:rgba(230,60,70,.7)">
       <div class="info">
         <div class="meta"><span>Клиент: <b>Car Export</b></span><span>Сфера: <b>авто из Кореи и Китая</b></span></div>
         <h3>Car <em>Export</em></h3>
         <p>Лендинг посредника: пять шагов сделки, цифры доверия, отзывы и один главный призыв — написать в Telegram.</p>
-        <a class="btn glass open" href="https://carrexport.ru" target="_blank" rel="noopener">Открыть сайт <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 12 12 4M6 4h6v6"/></svg></a>
+        <div style="display:flex;flex-wrap:wrap;gap:10px"><a class="btn white open" href="./raboty/car-export/">Смотреть кейс <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 12 12 4M6 4h6v6"/></svg></a><a class="btn glass open" href="https://carrexport.ru" target="_blank" rel="noopener">Открыть сайт <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 12 12 4M6 4h6v6"/></svg></a></div>
       </div>
-      <div class="shot"><picture><source media="(max-width:860px)" srcset="img/work/carexport-m.jpg"><img src="img/work/carexport.jpg" alt="Первый экран сайта Car Export" loading="lazy"></picture></div>
+      <div class="shot"><picture><source media="(max-width:860px)" srcset="./img/work/carexport-m.jpg"><img src="./img/work/carexport.jpg" alt="Первый экран сайта Car Export" loading="lazy"></picture></div>
     </article>
     <article class="case" style="--tint:rgba(220,200,170,.6)">
       <div class="info">
         <div class="meta"><span>Клиент: <b>Ксения Субботина</b></span><span>Сфера: <b>обучение</b></span></div>
         <h3>Школа <em>Permanent</em></h3>
         <p>Сайт мастер-классов и курсов: выбор зон с пересчётом цены, тарифы и запись в личные сообщения с готовым текстом.</p>
-        <a class="btn glass open" href="https://subbotina-perm.ru" target="_blank" rel="noopener">Открыть сайт <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 12 12 4M6 4h6v6"/></svg></a>
+        <div style="display:flex;flex-wrap:wrap;gap:10px"><a class="btn white open" href="./raboty/ksenia/">Смотреть кейс <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 12 12 4M6 4h6v6"/></svg></a><a class="btn glass open" href="https://subbotina-perm.ru" target="_blank" rel="noopener">Открыть сайт <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 12 12 4M6 4h6v6"/></svg></a></div>
       </div>
-      <div class="shot"><picture><source media="(max-width:860px)" srcset="img/work/ksenia-m.jpg"><img src="img/work/ksenia.jpg" alt="Первый экран сайта школы Ксении Субботиной" loading="lazy"></picture></div>
+      <div class="shot"><picture><source media="(max-width:860px)" srcset="./img/work/ksenia-m.jpg"><img src="./img/work/ksenia.jpg" alt="Первый экран сайта Школа Permanent" loading="lazy"></picture></div>
     </article>
     <article class="case" style="--tint:rgba(255,150,80,.65)">
       <div class="info">
         <div class="meta"><span>Клиент: <b>Вкусный компромисс</b></span><span>Сфера: <b>десерты</b></span></div>
         <h3>Вкусный <em>компромисс</em></h3>
         <p>Каталог десертов в виде фруктов: при прокрутке десерт «разрезается» и показывает слои, корзина и заказ в Telegram.</p>
-        <a class="btn glass open" href="https://danildenis.github.io/vkusny-kompromiss/" target="_blank" rel="noopener">Открыть сайт <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 12 12 4M6 4h6v6"/></svg></a>
+        <div style="display:flex;flex-wrap:wrap;gap:10px"><a class="btn white open" href="./raboty/vkusny/">Смотреть кейс <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 12 12 4M6 4h6v6"/></svg></a></div>
       </div>
-      <div class="shot"><picture><source media="(max-width:860px)" srcset="img/work/vkusny-m.jpg"><img src="img/work/vkusny.jpg" alt="Первый экран сайта Вкусный компромисс" loading="lazy"></picture></div>
+      <div class="shot"><picture><source media="(max-width:860px)" srcset="./img/work/vkusny-m.jpg"><img src="./img/work/vkusny.jpg" alt="Первый экран сайта Вкусный компромисс" loading="lazy"></picture></div>
     </article>
   </div>
 </section>
@@ -428,10 +105,10 @@ textarea.inp{min-height:96px;resize:vertical;line-height:1.5}
     <div class="head up">
       <span class="label">Процесс</span>
       <h2>Как мы работаем <em>от заявки до запуска</em></h2>
-      <p class="lead">На каждом этапе показываем результат и согласуем с вами, прежде чем идти дальше.</p>
+      <p class="lead">На каждом этапе показываем результат и согласуем с вами, прежде чем идти дальше.</p><a class="more" href="./process/">Сроки и что понадобится от вас <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 12 12 4M6 4h6v6"/></svg></a>
     </div>
     <div class="rows focus">
-      <div class="row"><span class="n"><span class="num">01</span>Расчёт</span><span class="d">Выбираете страницы и опции в боте и сразу видите стоимость</span><span class="p">в боте</span></div>
+      <div class="row"><span class="n"><span class="num">01</span>Расчёт</span><span class="d">Выбираете страницы и опции в боте или в заявке на сайте и сразу видите стоимость</span><span class="p">в боте или на сайте</span></div>
       <div class="row"><span class="n"><span class="num">02</span>Бриф</span><span class="d">Отвечаете на короткие вопросы: о бизнесе, клиентах и сайтах, которые нравятся</span><span class="p">в Telegram</span></div>
       <div class="row"><span class="n"><span class="num">03</span>Дизайн</span><span class="d">Показываем первый экран, после согласования рисуем остальное</span><span class="p">согласуем с вами</span></div>
       <div class="row"><span class="n"><span class="num">04</span>Сборка</span><span class="d">Вёрстка, анимации, адаптив и форма заявки в Telegram</span><span class="p">проверяем на телефоне</span></div>
@@ -443,33 +120,23 @@ textarea.inp{min-height:96px;resize:vertical;line-height:1.5}
     <div class="head up">
       <span class="label">Цены</span>
       <h2>Цена известна <em>до начала работы</em></h2>
-      <p class="lead">Платите один раз за готовый сайт, без подписки за конструктор. Домен и хостинг оплачиваются отдельно, их настройку берём на себя.</p>
+      <p class="lead">Платите один раз за готовый сайт, без подписки за конструктор.</p><a class="more" href="./ceny/">Все цены на сайты и ботов <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 12 12 4M6 4h6v6"/></svg></a>
     </div>
     <div class="base up">
-      <div class="sum"><small>База</small>10 000 ₽</div>
+      <div class="sum"><small>Сайт · база</small>10 000 ₽</div>
       <ul><li>до 3 страниц</li><li>адаптив под телефон</li><li>настройка домена и хостинга</li><li>форма заявки в Telegram</li></ul>
     </div>
-    <div class="rows">
-      <div class="row"><span class="n">Страница сверх трёх</span><span class="d">Каждая дополнительная страница</span><span class="p">+3 000 ₽</span></div>
-      <div class="row"><span class="n">Анимации</span><span class="d">Кнопки +1 000, плашки +1 500, переходы +2 000, появление блоков +500 за страницу</span><span class="p">от 500 ₽</span></div>
-      <div class="row"><span class="n">Уникальный дизайн</span><span class="d">Рисуем под ваш бренд с нуля</span><span class="p">+1 000 ₽<small>за страницу</small></span></div>
-      <div class="row"><span class="n">Тексты от нас</span><span class="d">Пишем тексты для страниц</span><span class="p">+500 ₽<small>за страницу</small></span></div>
-      <div class="row"><span class="n">Онлайн-оплата</span><span class="d">Приём оплаты прямо на сайте</span><span class="p">+6 000 ₽</span></div>
-      <div class="row"><span class="n">Админка</span><span class="d">Сами меняете тексты, фото и цены</span><span class="p">+8 000 ₽</span></div>
-      <div class="row"><span class="n">Базовое SEO</span><span class="d">Настройка, чтобы сайт находили в поиске</span><span class="p">+2 000 ₽</span></div>
-      <div class="row"><span class="n">Срочно</span><span class="d">Сдаём за срок до 5 дней</span><span class="p">+25%<small>к итогу</small></span></div>
-    </div>
-    <div class="bar up"><span>Соберите свой сайт и узнайте итог</span><a class="btn" href="#apply" data-apply>Открыть калькулятор <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 12 12 4M6 4h6v6"/></svg></a></div>
   </section>
 
   <section class="wrap sec" id="about">
     <div class="team">
-      <div class="photo up"><img src="img/team/duo.jpg" alt="Данил и Денис, основатели duo" loading="lazy"></div>
+      <div class="photo up"><img src="./img/team/duo.jpg" alt="Данил и Денис, основатели duo" loading="lazy"></div>
       <div>
         <div class="head up" style="margin-bottom:36px">
           <span class="label">О нас</span>
           <h2>Два человека. <em>Один результат.</em></h2>
           <p class="lead">Мы два друга и работаем вдвоём, без менеджеров-посредников: вы общаетесь напрямую с теми, кто делает ваш сайт.</p>
+          <a class="more" href="./o-nas/">Подробнее о нас <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 12 12 4M6 4h6v6"/></svg></a>
         </div>
         <div class="rows people">
           <div class="row"><span class="n">Данил</span><span class="d">Дизайн и визуал, общение с клиентами, аналитика</span></div>
@@ -477,369 +144,22 @@ textarea.inp{min-height:96px;resize:vertical;line-height:1.5}
         </div>
       </div>
     </div>
-  </section>
-
-  <section class="wrap sec" id="why">
-    <div class="head up">
-      <span class="label">Почему duo</span>
-      <h2>Не конструктор, <em>а готовый сайт</em></h2>
-    </div>
-    <div class="rows">
-      <div class="row"><span class="n">Без подписки</span><span class="d">Платите один раз за готовый сайт, а не каждый месяц за конструктор</span><span class="p">разовая оплата</span></div>
-      <div class="row"><span class="n">Свой дизайн</span><span class="d">Сайт выглядит как ваш бренд, а не как шаблон из каталога</span><span class="p">под ваш бренд</span></div>
-      <div class="row"><span class="n">Цена заранее</span><span class="d">Стоимость сайта видно в калькуляторе до начала работы</span><span class="p">без сюрпризов</span></div>
-      <div class="row"><span class="n">Живые люди</span><span class="d">Отвечаем в Telegram сами, без менеджеров. Можем взять на себя тексты, домен и хостинг</span><span class="p">на связи</span></div>
-    </div>
-    <div class="bar up" id="contacts"><span>Обсудим ваш проект?<em class="alt">или напишите в бота <a href="https://t.me/duodevops_bot" target="_blank" rel="noopener">@duodevops_bot</a></em></span><a class="btn" href="#apply" data-apply>Оставить заявку <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 12 12 4M6 4h6v6"/></svg></a></div>
+    <div class="bar up"><span>Обсудим ваш проект?<em class="alt">или напишите в бота <a href="https://t.me/duodevops_bot" target="_blank" rel="noopener">@duodevops_bot</a></em></span><a class="btn" href="./zayavka/">Оставить заявку <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 12 12 4M6 4h6v6"/></svg></a></div>
   </section>
 </div>
+</main>
 
-<footer class="foot dark">
+<footer class="foot dark" id="contacts">
   <div class="wrap foot-grid">
     <div>
       <div class="mk" aria-hidden="true"></div>
       <p>Делаем сайты и Telegram-ботов для бизнеса. Напишите нам в Telegram или посчитайте стоимость в боте — ответим и подскажем, с чего начать.</p>
     </div>
-    <div><h4>Разделы</h4><ul><li><a href="#work">Работы</a></li><li><a href="#services">Услуги</a></li><li><a href="#prices">Цены</a></li><li><a href="#process">Процесс</a></li><li><a href="#about">О нас</a></li></ul></div>
-    <div><h4>Работы</h4><ul><li><a href="https://carrexport.ru" target="_blank" rel="noopener">Car Export</a></li><li><a href="https://subbotina-perm.ru" target="_blank" rel="noopener">Ксения Субботина</a></li><li><a href="https://danildenis.github.io/vkusny-kompromiss/" target="_blank" rel="noopener">Вкусный компромисс</a></li></ul></div>
+    <div><h4>Разделы</h4><ul><li><a href="./raboty/">Работы</a></li><li><a href="./uslugi/">Услуги</a></li><li><a href="./ceny/">Цены</a></li><li><a href="./process/">Процесс</a></li><li><a href="./o-nas/">О нас</a></li><li><a href="./zayavka/">Заявка</a></li></ul></div>
+    <div><h4>Работы</h4><ul><li><a href="./raboty/car-export/">Car Export</a></li><li><a href="./raboty/ksenia/">Ксения Субботина</a></li><li><a href="./raboty/vkusny/">Вкусный компромисс</a></li></ul></div>
     <div><h4>Связь</h4><ul><li><a href="https://t.me/duodevops_bot" target="_blank" rel="noopener">Бот @duodevops_bot</a></li><li><a href="https://t.me/duodevops" target="_blank" rel="noopener">Telegram-канал</a></li><li><a href="https://instagram.com/duo_devops" target="_blank" rel="noopener">Instagram</a></li></ul></div>
   </div>
   <div class="endbar"><span>Websites · Products · Automation</span><b>duo</b><span>© 2026 · Два человека. Один результат.</span></div>
 </footer>
-</main>
-
-<div class="apply" id="apply" aria-hidden="true">
-  <div class="shade" data-close></div>
-  <form class="panel" id="applyForm" role="dialog" aria-modal="true" aria-labelledby="applyTitle" novalidate>
-    <div class="p-top"><span class="label" id="applyTitle">Заявка · <span id="stepNo">1 из 6</span></span><button class="x" type="button" data-close aria-label="Закрыть"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 1l12 12M13 1 1 13"/></svg></button></div>
-    <div class="prog" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
-    <div class="p-body">
-
-      <section class="step on" data-step="1">
-        <h3 tabindex="-1">Что делаем? <em>Посчитаем сразу</em></h3>
-        <p class="sub">Выберите, что нужно. Цена пересчитывается на ходу, точную назовём после брифа.</p>
-        <div class="f"><span>Проект <b>*</b></span><div class="chips">
-          <label class="chip"><input type="radio" name="type" value="Сайт" checked><span>Сайт</span></label>
-          <label class="chip"><input type="radio" name="type" value="Telegram-бот"><span>Telegram-бот</span></label>
-          <label class="chip"><input type="radio" name="type" value="Сайт и бот"><span>Сайт и бот</span></label>
-          <label class="chip"><input type="radio" name="type" value="Пока не знаю"><span>Пока не знаю</span></label></div></div>
-        <div class="site-only">
-          <div class="f"><span>Сколько страниц <small>— до трёх входят в базу</small></span>
-            <div class="stepper"><button type="button" data-pages="-1" aria-label="Меньше страниц">−</button><output id="pagesOut">3 страницы</output><button type="button" data-pages="1" aria-label="Больше страниц">+</button></div>
-            <input type="hidden" name="pages" value="3"></div>
-          <div class="f"><span>Опции</span><div class="chips">
-            <label class="chip"><input type="checkbox" name="opt" value="design"><span>Уникальный дизайн <small>+1 000 ₽/стр.</small></span></label>
-            <label class="chip"><input type="checkbox" name="opt" value="appear"><span>Появление блоков <small>+500 ₽/стр.</small></span></label>
-            <label class="chip"><input type="checkbox" name="opt" value="buttons"><span>Анимированные кнопки <small>+1 000 ₽</small></span></label>
-            <label class="chip"><input type="checkbox" name="opt" value="plates"><span>Анимированные плашки <small>+1 500 ₽</small></span></label>
-            <label class="chip"><input type="checkbox" name="opt" value="trans"><span>Переходы <small>+2 000 ₽</small></span></label>
-            <label class="chip"><input type="checkbox" name="opt" value="texts"><span>Тексты от нас <small>+500 ₽/стр.</small></span></label>
-            <label class="chip"><input type="checkbox" name="opt" value="pay"><span>Онлайн-оплата <small>+6 000 ₽</small></span></label>
-            <label class="chip"><input type="checkbox" name="opt" value="admin"><span>Админка <small>+8 000 ₽</small></span></label>
-            <label class="chip"><input type="checkbox" name="opt" value="seo"><span>Базовое SEO <small>+2 000 ₽</small></span></label>
-            <label class="chip"><input type="checkbox" name="opt" value="urgent"><span>Срочно, до 5 дней <small>+25%</small></span></label>
-            <label class="chip"><input type="checkbox" name="opt" value="support"><span>Поддержка <small>1 500 ₽/мес.</small></span></label></div></div>
-        </div>
-        <div class="est"><div class="sum"><small>Предварительно</small><span id="estSum">10 000 ₽</span></div><p id="estNote">Домен и хостинг оплачиваются отдельно, настройку берём на себя.</p></div>
-      </section>
-
-      <section class="step" data-step="2">
-        <h3 tabindex="-1">О вашем <em>бизнесе</em></h3>
-        <p class="sub">Пара фраз, как рассказали бы другу. Этого хватит, чтобы начать.</p>
-        <label class="f"><span>Название <b>*</b></span><input class="inp" name="biz" placeholder="Например, «Студия Ивановой»" required><em class="err">Напишите название</em></label>
-        <label class="f"><span>Чем вы занимаетесь <b>*</b></span><textarea class="inp" name="about" placeholder="Что продаёте или какие услуги оказываете" required></textarea><em class="err">Пара слов о том, чем вы занимаетесь</em></label>
-        <div class="grid2">
-          <label class="f"><span>Город</span><input class="inp" name="city" placeholder="Город или регион"></label>
-          <label class="f"><span>Ссылки</span><input class="inp" name="links" placeholder="Соцсети, карты, старый сайт"></label>
-        </div>
-        <label class="check"><input type="checkbox" name="online" value="да"> Работаем онлайн по всей стране</label>
-      </section>
-
-      <section class="step" data-step="3">
-        <h3 tabindex="-1">Клиенты <em>и цель сайта</em></h3>
-        <p class="sub">Под это строим структуру: что человек видит первым и куда нажимает.</p>
-        <label class="f"><span>Кто ваши клиенты <b>*</b></span><textarea class="inp" name="clients" placeholder="Возраст, чем занимаются, что для них важно" required></textarea><em class="err">Опишите, кто к вам приходит</em></label>
-        <div class="f" data-need="goal"><span>Главное действие на сайте <b>*</b></span><div class="chips">
-          <label class="chip"><input type="radio" name="goal" value="Оставить заявку"><span>Оставить заявку</span></label>
-          <label class="chip"><input type="radio" name="goal" value="Записаться на время"><span>Записаться на время</span></label>
-          <label class="chip"><input type="radio" name="goal" value="Купить или оплатить"><span>Купить или оплатить</span></label>
-          <label class="chip"><input type="radio" name="goal" value="Написать или позвонить"><span>Написать или позвонить</span></label>
-          <label class="chip"><input type="radio" name="goal" value="Узнать о нас и доверять"><span>Узнать о нас</span></label></div><em class="err">Выберите одно действие</em></div>
-        <div class="f"><span>Что должно быть на сайте <small>— остальное предложим сами</small></span><div class="chips">
-          <label class="chip"><input type="checkbox" name="blocks" value="Услуги и цены"><span>Услуги и цены</span></label>
-          <label class="chip"><input type="checkbox" name="blocks" value="О вас или команде"><span>О вас</span></label>
-          <label class="chip"><input type="checkbox" name="blocks" value="Работы"><span>Работы</span></label>
-          <label class="chip"><input type="checkbox" name="blocks" value="Отзывы"><span>Отзывы</span></label>
-          <label class="chip"><input type="checkbox" name="blocks" value="Вопросы и ответы"><span>Вопросы и ответы</span></label>
-          <label class="chip"><input type="checkbox" name="blocks" value="Контакты и карта"><span>Контакты и карта</span></label>
-          <label class="chip"><input type="checkbox" name="blocks" value="Запись онлайн"><span>Запись онлайн</span></label>
-          <label class="chip"><input type="checkbox" name="blocks" value="Акции"><span>Акции</span></label></div></div>
-      </section>
-
-      <section class="step" data-step="4">
-        <h3 tabindex="-1">Стиль <em>и материалы</em></h3>
-        <p class="sub">Лучше всего помогают примеры: покажите, что нравится, и мы поймём ваш вкус.</p>
-        <label class="f"><span>2–3 сайта, которые нравятся <b>*</b></span><textarea class="inp" name="likes" placeholder="Ссылки любой сферы и что именно в них нравится" required></textarea><em class="err">Хотя бы один пример</em></label>
-        <label class="f"><span>Чего точно не хотите</span><input class="inp" name="avoid" placeholder="Цвета, приёмы, примеры"></label>
-        <div class="f" data-max="3"><span>Ощущение от сайта <small>— до трёх слов</small></span><div class="chips">
-          <label class="chip"><input type="checkbox" name="mood" value="строгий"><span>строгий</span></label>
-          <label class="chip"><input type="checkbox" name="mood" value="тёплый"><span>тёплый</span></label>
-          <label class="chip"><input type="checkbox" name="mood" value="дорогой"><span>дорогой</span></label>
-          <label class="chip"><input type="checkbox" name="mood" value="дружелюбный"><span>дружелюбный</span></label>
-          <label class="chip"><input type="checkbox" name="mood" value="яркий"><span>яркий</span></label>
-          <label class="chip"><input type="checkbox" name="mood" value="минималистичный"><span>минималистичный</span></label>
-          <label class="chip"><input type="checkbox" name="mood" value="экспертный"><span>экспертный</span></label>
-          <label class="chip"><input type="checkbox" name="mood" value="спокойный"><span>спокойный</span></label>
-          <label class="chip"><input type="checkbox" name="mood" value="смелый"><span>смелый</span></label></div></div>
-        <div class="grid2">
-          <div class="f"><span>Логотип</span><div class="chips">
-            <label class="chip"><input type="radio" name="logo" value="есть"><span>Есть</span></label>
-            <label class="chip"><input type="radio" name="logo" value="нет"><span>Нет</span></label>
-            <label class="chip"><input type="radio" name="logo" value="нужно сделать"><span>Нужно сделать</span></label></div></div>
-          <div class="f"><span>Свои фото</span><div class="chips">
-            <label class="chip"><input type="radio" name="photos" value="есть"><span>Есть</span></label>
-            <label class="chip"><input type="radio" name="photos" value="мало"><span>Мало</span></label>
-            <label class="chip"><input type="radio" name="photos" value="нет"><span>Нет</span></label></div></div>
-        </div>
-      </section>
-
-      <section class="step" data-step="5">
-        <h3 tabindex="-1">Сроки <em>и детали</em></h3>
-        <p class="sub">Подскажите, к какой дате нужен сайт, и мы скажем, успеваем ли к ней.</p>
-        <div class="grid2">
-          <label class="f"><span>Нужен к дате <b>*</b></span><input class="inp" type="date" name="date" required><em class="err">Выберите дату</em></label>
-          <label class="f"><span>Почему к ней</span><input class="inp" name="why" placeholder="Открытие, сезон, акция"></label>
-        </div>
-        <div class="f"><span>Есть ли домен</span><div class="chips">
-          <label class="chip"><input type="radio" name="domain" value="есть"><span>Есть</span></label>
-          <label class="chip"><input type="radio" name="domain" value="нет, поможете выбрать"><span>Нет, помогите выбрать</span></label></div></div>
-        <label class="f"><span>Комментарий</span><textarea class="inp" name="comment" placeholder="Всё, что не вошло выше"></textarea></label>
-      </section>
-
-      <section class="step" data-step="6">
-        <h3 tabindex="-1">Куда <em>вам ответить</em></h3>
-        <p class="sub">Оставьте контакты, и мы напишем вам удобным способом.</p>
-        <label class="f"><span>Имя <b>*</b></span><input class="inp" name="name" autocomplete="name" placeholder="Как к вам обращаться" required><em class="err">Напишите имя</em></label>
-        <div class="grid2">
-          <label class="f"><span>Телефон <b>*</b></span><input class="inp" type="tel" name="phone" autocomplete="tel" placeholder="+7 900 000-00-00" required><em class="err">Проверьте номер</em></label>
-          <label class="f"><span>Почта <b>*</b></span><input class="inp" type="email" name="email" autocomplete="email" placeholder="name@mail.ru" required><em class="err">Проверьте почту</em></label>
-        </div>
-        <div class="f"><span>Как удобнее связаться</span><div class="chips">
-          <label class="chip"><input type="radio" name="contact" value="Telegram" checked><span>Telegram</span></label>
-          <label class="chip"><input type="radio" name="contact" value="Звонок"><span>Звонок</span></label>
-          <label class="chip"><input type="radio" name="contact" value="WhatsApp"><span>WhatsApp</span></label></div></div>
-        <div class="f" data-need="consent"><label class="check"><input type="checkbox" name="consent" value="да"> Соглашаюсь на обработку персональных данных</label><em class="err">Без согласия мы не сможем принять заявку</em></div>
-      </section>
-
-      <section class="step" data-step="done">
-        <div class="done">
-          <div class="ok"><svg width="26" height="26" viewBox="0 0 26 26" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 13.5 10.5 19 21 7"/></svg></div>
-          <h3>Спасибо, <em>заявка у нас</em></h3>
-          <p class="sub" style="margin:10px auto 0;max-width:420px">Изучим ответы и напишем вам удобным способом.</p>
-          <div class="card" id="doneCard"></div>
-        </div>
-      </section>
-    </div>
-    <div class="p-foot">
-      <span class="hint" id="hint">Ответы сохраняются в этом браузере</span>
-      <div class="acts"><button class="back" type="button" id="back">Назад</button><button class="btn white next" type="submit" id="next">Дальше <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M3 8h10M9 4l4 4-4 4"/></svg></button></div>
-    </div>
-  </form>
-</div>
-
-<script>
-(() => {
-  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-  // знак duo — видео из After Effects (motion/hero-logo). Остальной экран ждёт старта видео
-  const hero = document.querySelector('.hero'), v = document.getElementById('logoVideo');
-  let go = false;
-  const start = still => { if (go) return; go = true; if (still) hero.classList.add('still'); hero.classList.remove('wait'); document.body.classList.remove('wait'); };
-  if (reduce) { v.removeAttribute('autoplay'); v.pause(); start(true); }
-  else {
-    if (!v.paused && v.currentTime > 0) start(false);
-    v.addEventListener('playing', () => start(false), { once: true });
-    v.querySelector('source:last-of-type').addEventListener('error', () => start(true));
-    const pr = v.play(); if (pr) pr.catch(() => start(true));
-    setTimeout(() => { if (v.paused) start(true); }, 1200);
-  }
-
-  // меню в вырезе: на телефоне открывается по нажатию
-  const notch = document.getElementById('notch'), burger = notch.querySelector('.burger');
-  burger.addEventListener('click', () => { const o = notch.classList.toggle('open'); burger.setAttribute('aria-expanded', o); });
-  const shut = () => { notch.classList.remove('open'); burger.setAttribute('aria-expanded', false); };
-  notch.querySelectorAll('a').forEach(a => a.addEventListener('click', shut));
-  document.addEventListener('pointerdown', e => { if (notch.classList.contains('open') && !notch.contains(e.target)) shut(); });
-
-  // вступление: слова проявляются по мере прокрутки
-  const rv = document.querySelector('.reveal');
-  rv.innerHTML = rv.textContent.trim().split(/\s+/).map(w => `<span>${w}</span>`).join(' ');
-  const words = [...rv.children];
-
-  // строки: подсвечивается та, что пересекает середину экрана (наблюдатель, без замеров на каждом кадре)
-  const rowIO = new IntersectionObserver(es => es.forEach(e => e.target.classList.toggle('on', e.isIntersecting)), { rootMargin: '-44% 0px -44% 0px' });
-  document.querySelectorAll('.rows.focus .row').forEach(r => rowIO.observe(r));
-
-  // работы: предыдущая карточка уходит вглубь и темнеет (слой ::after по opacity), когда на неё ложится следующая
-  const cases = [...document.querySelectorAll('.case')];
-  const stackMQ = matchMedia('(min-width:861px)');
-  cases.forEach(c => c.insertAdjacentHTML('beforeend', '<i class="dim" aria-hidden="true"></i>'));
-  const photo = document.querySelector('.photo img');
-  let caseTop = 0, caseH = 0;
-  const measure = () => { if (cases[0]) { caseTop = parseFloat(getComputedStyle(cases[0]).top); caseH = cases[0].offsetHeight; } };
-  measure();
-
-  // что сейчас на экране: считаем только видимое
-  const live = new Set();
-  const liveIO = new IntersectionObserver(es => es.forEach(e => e.isIntersecting ? live.add(e.target) : live.delete(e.target)), { rootMargin: '20% 0px' });
-  [rv, document.getElementById('work'), photo && photo.parentElement].forEach(el => el && liveIO.observe(el));
-
-  let ticking = false, lastK = -1, heroHidden = false;
-  const work = document.getElementById('work');
-  function frame() {
-    ticking = false;
-    const H = innerHeight, y = scrollY;
-    if (live.has(rv)) {
-      const r = rv.getBoundingClientRect(), p = Math.min(1, Math.max(0, (H * .82 - r.top) / (r.height + H * .35)));
-      const k = Math.round(p * words.length);
-      if (k !== lastK) { words.forEach((w, i) => w.classList.toggle('on', i < k)); lastK = k; }
-    }
-    if (stackMQ.matches && live.has(work)) {
-      const tops = cases.map(c => c.getBoundingClientRect().top);
-      for (let i = 0; i < cases.length - 1; i++) {
-        const q = Math.min(1, Math.max(0, 1 - (tops[i + 1] - caseTop) / caseH));
-        cases[i].style.transform = `scale(${(1 - q * .06).toFixed(4)})`; cases[i].lastElementChild.style.opacity = (q * .55).toFixed(3);
-      }
-    }
-    if (photo && live.has(photo.parentElement)) { const b = photo.parentElement.getBoundingClientRect(); photo.style.transform = `translate3d(0,${((b.top + b.height / 2 - H / 2) / H) * -40}px,0)`; }
-    // первый экран уходит вглубь под лист — только пока он виден
-    if (y < H * 1.1) { const s = Math.min(1, y / H); hero.style.transform = `scale(${(1 - s * .06).toFixed(4)})`; hero.style.opacity = (1 - s * .75).toFixed(3); }
-    const hide = y > H * 1.6;
-    if (hide !== heroHidden) { heroHidden = hide; hero.style.visibility = hide ? 'hidden' : ''; }
-  }
-  const onScroll = () => { if (!ticking) { ticking = true; requestAnimationFrame(frame); } };
-  if (!reduce) { addEventListener('scroll', onScroll, { passive: true }); addEventListener('resize', () => { measure(); if (!stackMQ.matches) cases.forEach(c => { c.style.transform = ''; c.lastElementChild.style.opacity = ''; }); onScroll(); }); frame(); }
-  else words.forEach(w => w.classList.add('on'));
-
-  // заголовки и плашки появляются снизу
-  const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { rootMargin: '0px 0px -12% 0px' });
-  document.querySelectorAll('.up').forEach(el => io.observe(el));
-
-  // ── заявка ── (отправка не подключена: см. send() — Денис подключит рабочий чат)
-  const ap = document.getElementById('apply'), form = document.getElementById('applyForm');
-  const steps = [...form.querySelectorAll('.step')], bars = [...form.querySelectorAll('.prog i')];
-  const nextB = document.getElementById('next'), backB = document.getElementById('back');
-  let cur = 0, lastFocus = null;
-  const KEY = 'duo-apply-draft';
-  const rub = n => n.toLocaleString('ru-RU').replace(/ /g, ' ') + ' ₽';
-  const plural = n => n % 10 === 1 && n % 100 !== 11 ? 'страница' : [2, 3, 4].includes(n % 10) && ![12, 13, 14].includes(n % 100) ? 'страницы' : 'страниц';
-  const PRICE = { design: [1000, 1], appear: [500, 1], texts: [500, 1], buttons: [1000, 0], plates: [1500, 0], trans: [2000, 0], pay: [6000, 0], admin: [8000, 0], seo: [2000, 0] };
-
-  function calc() {
-    const type = form.type.value, n = +form.pages.value, opts = [...form.querySelectorAll('[name=opt]:checked')].map(i => i.value);
-    const site = type === 'Сайт' || type === 'Сайт и бот';
-    form.querySelector('.site-only').style.display = site ? '' : 'none';
-    let sum = 10000 + Math.max(0, n - 3) * 3000;
-    opts.forEach(o => { if (PRICE[o]) sum += PRICE[o][0] * (PRICE[o][1] ? n : 1); });
-    if (opts.includes('urgent')) sum = Math.round(sum * 1.25 / 100) * 100;
-    document.getElementById('pagesOut').textContent = `${n} ${plural(n)}`;
-    const sumEl = document.getElementById('estSum'), note = document.getElementById('estNote');
-    if (type === 'Telegram-бот') { sumEl.textContent = 'под задачу'; note.textContent = 'Цену бота назовём после короткого брифа.'; }
-    else if (type === 'Пока не знаю') { sumEl.textContent = 'подскажем'; note.textContent = 'Расскажите о бизнесе, и мы предложим, что подойдёт.'; }
-    else { sumEl.textContent = 'от ' + rub(sum); note.textContent = (type === 'Сайт и бот' ? 'Бот считаем отдельно, под задачу. ' : '') + (opts.includes('support') ? 'Поддержка 1 500 ₽ в месяц. ' : '') + 'Домен и хостинг оплачиваются отдельно.'; }
-    return { sum: type === 'Сайт' || type === 'Сайт и бот' ? sum : null, opts };
-  }
-  form.addEventListener('click', e => {
-    const b = e.target.closest('[data-pages]'); if (!b) return;
-    form.pages.value = Math.min(20, Math.max(1, +form.pages.value + +b.dataset.pages)); calc(); save();
-  });
-  form.addEventListener('change', e => {
-    const box = e.target.closest('[data-max]');
-    if (box && e.target.checked && box.querySelectorAll('input:checked').length > +box.dataset.max) e.target.checked = false;
-    e.target.closest('.f')?.classList.remove('bad'); e.target.classList?.remove('bad');
-    calc(); save();
-  });
-  form.addEventListener('input', e => { e.target.removeAttribute('aria-invalid'); e.target.classList.remove('bad'); e.target.closest('.f')?.classList.remove('bad'); save(); });
-
-  // черновик в браузере посетителя
-  function save() { try { const d = {}; new FormData(form).forEach((v, k) => { (d[k] ||= []).push(v); }); localStorage.setItem(KEY, JSON.stringify({ d, cur })); } catch (_) {} }
-  function load() {
-    try {
-      const raw = JSON.parse(localStorage.getItem(KEY) || 'null'); if (!raw) return;
-      form.querySelectorAll('input,textarea').forEach(el => {
-        const v = raw.d[el.name]; if (!v) { if (el.type === 'checkbox') el.checked = false; return; }
-        if (el.type === 'checkbox' || el.type === 'radio') el.checked = v.includes(el.value); else el.value = v[0];
-      });
-      cur = Math.min(raw.cur || 0, 5);
-    } catch (_) {}
-  }
-
-  function valid(step) {
-    let ok = true;
-    step.querySelectorAll('[required]').forEach(el => {
-      let good = el.value.trim().length > 0;
-      if (el.type === 'email') good = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(el.value.trim());
-      if (el.type === 'tel') good = el.value.replace(/\D/g, '').length >= 10;
-      el.setAttribute('aria-invalid', String(!good));
-      if (!good) { ok = false; el.classList.add('bad'); el.closest('.f')?.classList.add('bad'); }
-    });
-    step.querySelectorAll('[data-need]').forEach(f => { if (!f.querySelector('input:checked')) { ok = false; f.classList.add('bad'); } });
-    if (!ok) step.querySelector('.bad .inp, .bad input')?.focus();
-    return ok;
-  }
-  function show(i) {
-    cur = i; const done = i === 6;
-    steps.forEach((s, k) => s.classList.toggle('on', k === i));
-    bars.forEach((b, k) => b.classList.toggle('fill', k < i || done));
-    document.getElementById('hint').style.visibility = done ? 'hidden' : '';
-    document.getElementById('applyTitle').firstChild.textContent = done ? 'Готово' : 'Заявка · ';
-    document.getElementById('stepNo').textContent = done ? '' : `${i + 1} из 6`;
-    backB.style.visibility = i === 0 || done ? 'hidden' : 'visible';
-    nextB.firstChild.textContent = done ? 'Вернуться на сайт ' : i === 5 ? 'Отправить ' : 'Дальше ';
-    nextB.querySelector('svg').style.display = done ? 'none' : '';
-    form.querySelector('.p-body').scrollTop = 0; if (!done) save();
-    if (ap.classList.contains('open')) steps[i].querySelector('h3')?.focus({ preventScroll: true });
-  }
-  function send() {
-    const d = {}; new FormData(form).forEach((v, k) => { d[k] = d[k] ? [].concat(d[k], v) : v; });
-    const { sum } = calc();
-    const payload = { ...d, estimate: sum, sentAt: new Date().toISOString() };
-    // TODO (Денис): отправить payload в рабочий чат Telegram и записать заявку; почта — для уведомлений о статусе.
-    console.info('duo · заявка (отправка не подключена)', payload);
-    const card = document.getElementById('doneCard'), b = document.createElement('b');
-    b.textContent = d.biz || ''; card.replaceChildren(b, ` · ${d.type}${sum ? ' · от ' + rub(sum) : ''}`, document.createElement('br'),
-      `${d.name}, ${d.phone}`, document.createElement('br'), `${d.email} · связь: ${d.contact}`);
-    try { localStorage.removeItem(KEY); } catch (_) {}
-  }
-  form.addEventListener('submit', e => {
-    e.preventDefault();
-    if (cur === 6) return close();
-    if (!valid(steps[cur])) return;
-    if (cur === 5) { send(); show(6); } else show(cur + 1);
-  });
-  backB.addEventListener('click', () => cur > 0 && show(cur - 1));
-
-  function open() {
-    lastFocus = document.activeElement; load(); calc(); show(cur === 6 ? 0 : cur);
-    document.querySelector('main').inert = true; notch.inert = true; form.date.min = new Date().toISOString().slice(0, 10);
-    ap.classList.add('open'); ap.setAttribute('aria-hidden', 'false'); document.documentElement.style.overflow = 'hidden';
-    setTimeout(() => steps[cur].querySelector('h3')?.focus({ preventScroll: true }), 350);
-  }
-  function close() {
-    document.querySelector('main').inert = false; notch.inert = false;
-    ap.classList.remove('open'); ap.setAttribute('aria-hidden', 'true'); document.documentElement.style.overflow = '';
-    if (cur === 6) { form.reset(); form.pages.value = 3; cur = 0; }
-    lastFocus?.focus?.();
-  }
-  document.querySelectorAll('[data-apply]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); open(); }));
-  ap.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', close));
-  addEventListener('keydown', e => {
-    if (e.key !== 'Escape') return;
-    if (ap.classList.contains('open')) close();
-    else if (notch.classList.contains('open')) { shut(); burger.focus(); }
-  });
-  if (location.hash === '#apply') open();
-})();
-</script>
 </body>
 </html>

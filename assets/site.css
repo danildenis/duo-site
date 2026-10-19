@@ -568,3 +568,14 @@ textarea.inp{min-height:96px;resize:vertical;line-height:1.5}
 .tg-wrap .tg-restart{border:0;background:none;color:var(--ink2);font:inherit;font-size:14px;cursor:pointer}
 .tg-wrap .tg-restart:hover{color:var(--ink)}
 @media (max-width:860px){.tg{width:min(352px,92vw);height:auto;aspect-ratio:352/724;max-width:none;margin:0}}
+
+/* демо-бот: настоящее мини-приложение в телефоне */
+.tg-app{background:#F6F1EC}
+.tg-status.light{background:#F6F1EC;color:#2A2321}
+.tg-status.light .tg-ic{font-size:11px;letter-spacing:1px}
+.tg-apphead{flex:none;display:grid;grid-template-columns:70px 1fr 70px;align-items:center;padding:2px 14px 10px;background:#F6F1EC;color:#2A2321;font-size:14px;border-bottom:1px solid rgba(42,35,33,.08)}
+.tg-apphead span{color:#9A6457}.tg-apphead span:last-child{text-align:right;font-size:18px}
+.tg-apphead b{text-align:center;font-weight:600}
+.tg-app iframe{flex:1;width:100%;border:0;display:block;background:#F6F1EC}
+.tg-home.dark{background:rgba(42,35,33,.55)}
+.tg-hint{font-size:14px;color:var(--ink2);text-align:center}

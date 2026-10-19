@@ -10,7 +10,7 @@ import { fileURLToPath } from 'node:url';
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const read = p => readFileSync(join(ROOT, p), 'utf8');
 // версия файлов в адресе — чтобы после выкладки у всех открывалась свежая версия
-const VER = createHash('sha1').update(read('assets/site.css') + read('assets/site.js') + read('assets/bots.js')).digest('hex').slice(0, 8);
+const VER = createHash('sha1').update(read('assets/site.css') + read('assets/site.js')).digest('hex').slice(0, 8);
 const FORM = read('tools/parts/form.html');
 
 const ARROW = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 12 12 4M6 4h6v6"/></svg>';
@@ -134,7 +134,7 @@ const footer = R => `<footer class="foot dark" id="contacts">
       <p class="legal"><a href="${R}privacy/">Политика обработки персональных данных</a></p>
     </div>
     <div><h4>Разделы</h4><ul>${[['raboty/', 'Работы'], ['uslugi/', 'Услуги'], ['ceny/', 'Цены'], ['process/', 'Процесс'], ['voprosy/', 'Вопросы'], ['razbor/', 'Разбор сайта'], ['o-nas/', 'О нас'], ['zayavka/', 'Заявка']].map(([h, t]) => `<li><a href="${R}${h}">${t}</a></li>`).join('')}</ul></div>
-    <div><h4>Работы</h4><ul>${CASES.map(c => `<li><a href="${R}raboty/${c.slug}/">${c.client}</a></li>`).join('')}<li><a href="${R}raboty/#demo">Демо-сайты</a></li><li><a href="${R}raboty/#bots">Демо-боты</a></li></ul></div>
+    <div><h4>Работы</h4><ul>${CASES.map(c => `<li><a href="${R}raboty/${c.slug}/">${c.client}</a></li>`).join('')}<li><a href="${R}raboty/#demo">Демо-сайты</a></li><li><a href="${R}raboty/#bots">Демо-бот</a></li></ul></div>
     <div><h4>Связь</h4><ul><li><a href="${TG_APP}" target="_blank" rel="noopener">Приложение в Telegram</a></li><li><a href="https://t.me/duodevops_bot" target="_blank" rel="noopener">Бот @duodevops_bot</a></li><li><a href="https://t.me/duodevops" target="_blank" rel="noopener">Telegram-канал</a></li><li><a href="https://instagram.com/duo_devops" target="_blank" rel="noopener">Instagram</a></li></ul></div>
   </div>
   <div class="endbar"><span>Websites · Products · Automation</span><b>duo</b><span>© 2026 · Два человека. Один результат.</span></div>
@@ -339,7 +339,7 @@ page('uslugi/', {
       ${row('Связь с CRM', 'amoCRM, Битрикс24, 1С', '+8 000 ₽')}
       ${row('Нейросеть', 'Ответы нейросетью на вопросы клиентов', 'от +10 000 ₽')}
     </div>
-    <p class="note">Сервер для бота оплачивается отдельно: ${BOT.server} в месяц. ${more(`${R}raboty/#bots`, 'Попробовать демо-ботов')}</p>
+    <p class="note">Сервер для бота оплачивается отдельно: ${BOT.server} в месяц. ${more(`${R}raboty/#bots`, 'Попробовать демо-бота')}</p>
     ${bar(R, 'Нужен бот?', 'Рассказать о боте', 'zayavka/?type=bot')}
   </section>
 
@@ -371,29 +371,30 @@ page('raboty/', {
   <section class="wrap sec" id="bots">
     <div class="bots">
       <div>
-        ${head('Демо-боты', 'Попробуйте <em>прямо здесь</em>', 'Нажимайте кнопки в чате — так бот работает в Telegram у ваших клиентов. Бренды вымышлены, ничего никуда не отправляется.')}
-        <div class="bot-tabs" role="group" aria-label="Какой бот"><button type="button" data-bot="line">Запись в студию</button><button type="button" data-bot="coffee">Заказ в кофейне</button><button type="button" data-bot="talky">Онлайн-школа</button></div>
+        ${head('Демо-бот', 'Запись в студию <em>за минуту</em>', 'Так клиенты записываются к вам в Telegram: бот открывает мини-приложение — процедура, мастер, день и время. Подтверждение и напоминание приходят в чат. Студия «Линия» вымышлена, запись никуда не уходит.')}
         <span class="label" style="color:var(--ink3)">Что внутри этого бота</span>
-        <ul class="bot-feats"></ul>
+        <ul class="bot-feats">
+          <li><span>Запись на дату и время</span><b>+${rub(6000)}</b></li>
+          <li><span>Напоминания клиентам</span><b>+${rub(2000)}</b></li>
+          <li><span>Мини-приложение внутри бота</span><b>от +${rub(10000)}</b></li>
+        </ul>
         <p class="note">База любого бота — ${rub(BOT.base)}: меню, ответы на вопросы, заявки вам в Telegram. Функции добавляются по <a href="${R}ceny/#bots" style="text-decoration:underline;text-underline-offset:3px">прайсу</a>.</p>
-        <a class="btn bot-live" href="#" target="_blank" rel="noopener" style="margin-top:22px" hidden>${TG} Открыть этого бота в Telegram</a>
+        <a class="btn" href="https://t.me/fgfgfgfgfg76_bot" target="_blank" rel="noopener" style="margin-top:22px">${TG} Попробовать в Telegram</a>
       </div>
       <div class="tg-wrap up">
         <div class="tg">
           <i class="tg-btn tg-act"></i><i class="tg-btn tg-vol1"></i><i class="tg-btn tg-vol2"></i><i class="tg-btn tg-pwr"></i>
-          <div class="tg-in">
-            <div class="tg-status"><span>9:41</span><i class="tg-island"></i><span class="tg-ic"><svg viewBox="0 0 18 12" aria-hidden="true"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5.5" width="3" height="6.5" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg><svg viewBox="0 0 16 12" aria-hidden="true"><path d="M8 11.5 5.6 9a3.4 3.4 0 0 1 4.8 0L8 11.5Zm-4-4.1-1.5-1.5a7.8 7.8 0 0 1 11 0L12 7.4a5.7 5.7 0 0 0-8 0ZM.9 4.3-.6 2.8a12.2 12.2 0 0 1 17.2 0l-1.5 1.5a10 10 0 0 0-14.2 0Z"/></svg><b class="tg-bat"><i></i></b></span></div>
-            <div class="tg-head"><span class="tg-back">‹</span><div class="tg-title"><span class="nm"></span><small>бот</small></div><span class="av"></span></div>
-            <div class="tg-msgs" aria-live="polite"></div>
-            <div class="tg-input"><svg class="tg-clip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="m20 11.5-7.8 7.8a5 5 0 0 1-7.1-7.1l8.5-8.5a3.3 3.3 0 0 1 4.7 4.7l-8.5 8.5a1.7 1.7 0 0 1-2.4-2.4l7.8-7.8"/></svg><span class="tg-field">Сообщение</span><svg class="tg-mic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"/></svg></div>
-            <i class="tg-home"></i>
+          <div class="tg-in tg-app">
+            <div class="tg-status light"><span>9:41</span><i class="tg-island"></i><span class="tg-ic">●●● ◔</span></div>
+            <div class="tg-apphead"><span>Закрыть</span><b>Линия · запись</b><span>⋯</span></div>
+            <iframe src="${R}demo/linia/" title="Мини-приложение записи «Линия»" loading="lazy"></iframe>
+            <i class="tg-home dark"></i>
           </div>
         </div>
-        <button type="button" class="tg-restart">↻ Начать заново</button>
+        <span class="tg-hint">Это работает: выберите процедуру и время прямо здесь</span>
       </div>
     </div>
   </section>
-  <script src="${R}assets/bots.js?v=${VER}" defer></script>
 
   <section class="wrap sec">
     ${bar(R, 'Хотите сайт или бота под свою задачу?')}

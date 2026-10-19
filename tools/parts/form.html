@@ -107,6 +107,8 @@
       <section class="step" data-step="6">
         <h3 tabindex="-1">Куда <em>вам ответить</em></h3>
         <p class="sub">Оставьте контакты, и мы напишем вам удобным способом.</p>
+        <p class="send-err" id="sendErr" role="alert"></p>
+        <label class="hp" aria-hidden="true">Не заполняйте это поле <input name="website" tabindex="-1" autocomplete="off"></label>
         <label class="f"><span>Имя <b>*</b></span><input class="inp" name="name" autocomplete="name" placeholder="Как к вам обращаться" required><em class="err">Напишите имя</em></label>
         <div class="grid2">
           <label class="f"><span>Телефон <b>*</b></span><input class="inp" type="tel" name="phone" autocomplete="tel" placeholder="+7 900 000-00-00" required><em class="err">Проверьте номер</em></label>
@@ -116,7 +118,7 @@
           <label class="chip"><input type="radio" name="contact" value="Telegram" checked><span>Telegram</span></label>
           <label class="chip"><input type="radio" name="contact" value="Звонок"><span>Звонок</span></label>
           <label class="chip"><input type="radio" name="contact" value="WhatsApp"><span>WhatsApp</span></label></div></div>
-        <div class="f" data-need="consent"><label class="check"><input type="checkbox" name="consent" value="да"> Соглашаюсь на обработку персональных данных</label><em class="err">Без согласия мы не сможем принять заявку</em></div>
+        <div class="f" data-need="consent"><label class="check"><input type="checkbox" name="consent" value="да"> <span>Соглашаюсь на обработку персональных данных по <a href="{{R}}privacy/" target="_blank" rel="noopener">политике</a></span></label><em class="err">Без согласия мы не сможем принять заявку</em></div>
       </section>
 
       <section class="step" data-step="done">

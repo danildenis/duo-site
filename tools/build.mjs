@@ -15,6 +15,11 @@ const FORM = read('tools/parts/form.html');
 
 const ARROW = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 12 12 4M6 4h6v6"/></svg>';
 const NEXT = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M3 8h10M9 4l4 4-4 4"/></svg>';
+// мини-приложение DUO в Telegram: открывается сразу, без чата с ботом
+const TG_APP = 'https://t.me/duodevops_bot?startapp';
+const SITE_URL = 'https://danildenis.github.io/duo-site/';
+const TG = '<svg class="tg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21.4 4.2 18.3 19c-.2 1-.9 1.3-1.7.8l-4.7-3.5-2.3 2.2c-.3.3-.5.5-1 .5l.3-4.8 8.8-8c.4-.3-.1-.5-.6-.2L6.3 12.8l-4.7-1.5c-1-.3-1-1 .2-1.5L20.1 2.7c.8-.3 1.6.2 1.3 1.5Z"/></svg>';
+const tgBtn = (cls = 'btn line', text = 'Открыть в Telegram') => `<a class="${cls}" href="${TG_APP}" target="_blank" rel="noopener">${TG} ${text}</a>`;
 const ext = (href, text, cls = 'btn glass') => `<a class="${cls}" href="${href}" target="_blank" rel="noopener">${text} ${ARROW}</a>`;
 const rub = n => n.toLocaleString('ru-RU').replace(/\s/g, ' ') + ' ₽';
 
@@ -79,9 +84,35 @@ const CASES = [
   },
 ];
 
+// ── вопросы и ответы (только то, что есть в прайсе и в процессе) ──
+const FAQ = [
+  ['Сколько стоит сайт?', R => `<p>База — ${rub(SITE.base)}: до трёх страниц, адаптив под телефон, настройка домена и хостинга и форма заявки в Telegram. Дальше добавляете только нужное: страницы, дизайн, анимации, тексты, оплату, админку, SEO.</p><p>Все опции с ценами — на странице <a href="${R}ceny/">Цены</a>, итог считается в <a href="${R}zayavka/">заявке</a>.</p>`],
+  ['Сколько длится работа?', () => `<p>Обычно до 10 дней, без доплаты. Если нужно быстрее — сайт за 5–9 дней, это +25% к разработке.</p>`],
+  ['Нужно ли платить за домен и хостинг?', () => `<p>Да, они оплачиваются отдельно — напрямую, на ваше имя. Подключение и настройку берём на себя.</p>`],
+  ['Смогу ли я сам менять тексты и фото?', () => `<p>Да, если добавить админку (+8 000 ₽): тексты, фото и цены меняете сами. Без неё правки делаем мы — в рамках поддержки за ${rub(SITE.support)} в месяц.</p>`],
+  ['Что если дизайн не понравится?', R => `<p>Сначала показываем первый экран. Остальное рисуем только после того, как вы его согласуете — так результат не станет сюрпризом. Как проходит работа — на странице <a href="${R}process/">Процесс</a>.</p>`],
+  ['Вы пишете тексты для сайта?', () => `<p>Да, по желанию: +500 ₽ за страницу. Если тексты есть у вас — используем их.</p>`],
+  ['Сколько стоит Telegram-бот?', R => `<p>База — ${rub(BOT.base)}: меню и кнопки, ответы на частые вопросы, заявки вам в Telegram и запуск на сервере. Запись, каталог, оплата, рассылки и другие функции — по прайсу на странице <a href="${R}ceny/#bots">Цены</a>. Сервер для бота — ${BOT.server} в месяц, отдельно.</p>`],
+  ['Почему не конструктор?', () => `<p>За готовый сайт платите один раз, без ежемесячной подписки за конструктор. И сайт выглядит как ваш бренд, а не как шаблон из каталога.</p>`],
+  ['Как начать?', R => `<p>Оставьте <a href="${R}zayavka/">заявку</a> на сайте или откройте <a href="${TG_APP}" target="_blank" rel="noopener">приложение DUO в Telegram</a>. Ответим сами, без менеджеров, и подскажем, с чего начать.</p>`],
+];
+const faq = (R, list = FAQ) => `<div class="qa up">
+      ${list.map(([q, a]) => `<details><summary>${q}<i aria-hidden="true"></i></summary><div class="a">${a(R)}</div></details>`).join('\n      ')}
+    </div>`;
+
+// ── демо-сайты: бренды и данные вымышлены (копии из репозитория duo-portfolio) ──
+const DEMOS = [
+  { slug: 'coffee', label: 'Демо · кафе', name: 'Кофейня «Зерно»', text: 'Меню с вкладками, корзина и онлайн-оплата заказа с собой.', tags: ['Онлайн-оплата', 'Анимации', 'Появление блоков'] },
+  { slug: 'beauty', label: 'Демо · услуги', name: 'Студия «Линия»', text: 'Прайс с длительностью, онлайн-запись по дню и времени, работы мастеров.', tags: ['Онлайн-запись', 'Уникальный дизайн', 'Анимации'] },
+  { slug: 'school', label: 'Демо · обучение', name: 'Школа «Talky»', text: 'Калькулятор тарифа, программа, частые вопросы и заявка на пробный урок.', tags: ['Калькулятор цены', 'Тарифы', 'Заявки'] },
+];
+const demos = R => `<div class="demos">
+      ${DEMOS.map(d => `<a class="demo up" href="${R}demo/${d.slug}/" target="_blank" rel="noopener"><div class="pic"><img src="${R}img/demo/${d.slug}.jpg" alt="Демо-сайт: ${d.name}" loading="lazy"></div><div class="body"><span class="label">${d.label}</span><h3>${d.name}</h3><p>${d.text}</p><div class="tags">${d.tags.map(t => `<span>${t}</span>`).join('')}</div><span class="go">Открыть демо ${ARROW}</span></div></a>`).join('\n      ')}
+    </div>`;
+
 // ── общие куски ──
 const NAV_L = [['raboty/', 'Работы'], ['uslugi/', 'Услуги'], ['ceny/', 'Цены']];
-const NAV_R = [['process/', 'Процесс'], ['o-nas/', 'О нас'], ['zayavka/', 'Заявка']];
+const NAV_R = [['process/', 'Процесс'], ['voprosy/', 'Вопросы'], ['o-nas/', 'О нас']];
 const nav = (R, cur, list) => list.map(([h, t]) => `<a href="${R}${h}"${h === cur ? ' aria-current="page"' : ''}>${t}</a>`).join('');
 
 const header = (R, cur) => `<header class="notch" id="notch">
@@ -92,7 +123,7 @@ const header = (R, cur) => `<header class="notch" id="notch">
   <a class="home" href="${R}" aria-label="duo — на главную"></a>
   <nav class="r" aria-label="Разделы">${nav(R, cur, NAV_R)}</nav>
   <button class="burger" type="button" aria-label="Меню" aria-expanded="false"><i></i><i></i></button>
-  <div class="menu-m">${nav(R, cur, [['', 'Главная'], ...NAV_L, ...NAV_R.slice(0, 2)])}<a class="btn white" href="${R}zayavka/">Оставить заявку</a></div>
+  <div class="menu-m">${nav(R, cur, [['', 'Главная'], ...NAV_L, ...NAV_R])}<a class="tg-link" href="${TG_APP}" target="_blank" rel="noopener">${TG} Открыть в Telegram</a><a class="btn white" href="${R}zayavka/">Оставить заявку</a></div>
 </header>`;
 
 const footer = R => `<footer class="foot dark" id="contacts">
@@ -100,10 +131,11 @@ const footer = R => `<footer class="foot dark" id="contacts">
     <div>
       <div class="mk" aria-hidden="true"></div>
       <p>Делаем сайты и Telegram-ботов для бизнеса. Напишите нам в Telegram или посчитайте стоимость в боте — ответим и подскажем, с чего начать.</p>
+      <p class="legal"><a href="${R}privacy/">Политика обработки персональных данных</a></p>
     </div>
-    <div><h4>Разделы</h4><ul>${[['raboty/', 'Работы'], ['uslugi/', 'Услуги'], ['ceny/', 'Цены'], ['process/', 'Процесс'], ['o-nas/', 'О нас'], ['zayavka/', 'Заявка']].map(([h, t]) => `<li><a href="${R}${h}">${t}</a></li>`).join('')}</ul></div>
-    <div><h4>Работы</h4><ul>${CASES.map(c => `<li><a href="${R}raboty/${c.slug}/">${c.client}</a></li>`).join('')}</ul></div>
-    <div><h4>Связь</h4><ul><li><a href="https://t.me/duodevops_bot" target="_blank" rel="noopener">Бот @duodevops_bot</a></li><li><a href="https://t.me/duodevops" target="_blank" rel="noopener">Telegram-канал</a></li><li><a href="https://instagram.com/duo_devops" target="_blank" rel="noopener">Instagram</a></li></ul></div>
+    <div><h4>Разделы</h4><ul>${[['raboty/', 'Работы'], ['uslugi/', 'Услуги'], ['ceny/', 'Цены'], ['process/', 'Процесс'], ['voprosy/', 'Вопросы'], ['o-nas/', 'О нас'], ['zayavka/', 'Заявка']].map(([h, t]) => `<li><a href="${R}${h}">${t}</a></li>`).join('')}</ul></div>
+    <div><h4>Работы</h4><ul>${CASES.map(c => `<li><a href="${R}raboty/${c.slug}/">${c.client}</a></li>`).join('')}<li><a href="${R}raboty/#demo">Демо-сайты</a></li></ul></div>
+    <div><h4>Связь</h4><ul><li><a href="${TG_APP}" target="_blank" rel="noopener">Приложение в Telegram</a></li><li><a href="https://t.me/duodevops_bot" target="_blank" rel="noopener">Бот @duodevops_bot</a></li><li><a href="https://t.me/duodevops" target="_blank" rel="noopener">Telegram-канал</a></li><li><a href="https://instagram.com/duo_devops" target="_blank" rel="noopener">Instagram</a></li></ul></div>
   </div>
   <div class="endbar"><span>Websites · Products · Automation</span><b>duo</b><span>© 2026 · Два человека. Один результат.</span></div>
 </footer>`;
@@ -117,6 +149,16 @@ const layout = ({ R, path, title, desc, body, home }) => `<!doctype html>
 <meta name="description" content="${desc}">
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#0B0C0E">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="duo">
+<meta property="og:locale" content="ru_RU">
+<meta property="og:title" content="${title}">
+<meta property="og:description" content="${desc}">
+<meta property="og:url" content="${SITE_URL}${path === '404' ? '' : path}">
+<meta property="og:image" content="${SITE_URL}img/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="${R}assets/site.css?v=${VER}">
@@ -153,7 +195,7 @@ const head = (label, h2, lead = '', more = '') => `<div class="head up">
     </div>`;
 const more = (href, text) => `<a class="more" href="${href}">${text} ${ARROW}</a>`;
 const bar = (R, text, btn = 'Оставить заявку', href = 'zayavka/') =>
-  `<div class="bar up"><span>${text}<em class="alt">или напишите в бота <a href="https://t.me/duodevops_bot" target="_blank" rel="noopener">@duodevops_bot</a></em></span><a class="btn" href="${R}${href}">${btn} ${ARROW}</a></div>`;
+  `<div class="bar up"><span>${text}<em class="alt">или посчитайте в приложении DUO — оно откроется прямо в Telegram</em></span><div class="acts"><a class="btn" href="${R}${href}">${btn} ${ARROW}</a>${tgBtn()}</div></div>`;
 const nextp = (R, href, text) => `<div class="nextp"><span>Дальше</span><a href="${R}${href}">${text} ${NEXT}</a></div>`;
 const row = (n, d, p = '') => `<div class="row"><span class="n">${n}</span><span class="d">${d}</span>${p !== null ? `<span class="p">${p}</span>` : ''}</div>`;
 
@@ -246,6 +288,7 @@ page('', {
 <section class="work dark" id="work">
   <div class="wrap">${head('Работы', 'Сайты, которые <em>мы сделали</em>', 'Каждый собран под конкретную задачу клиента: свой стиль, своя структура и понятный путь к заявке.')}</div>
   ${caseCards(R)}
+  <div class="wrap" style="margin-top:clamp(28px,3vw,44px)">${more(`${R}raboty/#demo`, 'Ещё три демо-сайта: кофейня, студия, школа')}</div>
 </section>
 
 <div class="sheet">
@@ -259,6 +302,11 @@ page('', {
   <section class="wrap sec" id="prices">
     ${head('Цены', 'Цена известна <em>до начала работы</em>', 'Платите один раз за готовый сайт, без подписки за конструктор.', more(`${R}ceny/`, 'Все цены на сайты и ботов'))}
     ${siteBase}
+  </section>
+
+  <section class="wrap sec" id="faq">
+    ${head('Вопросы', 'Частые <em>вопросы</em>', '', more(`${R}voprosy/`, 'Все вопросы и ответы'))}
+    ${faq(R, [FAQ[1], FAQ[2], FAQ[3]])}
   </section>
 
   <section class="wrap sec" id="about">
@@ -320,7 +368,9 @@ page('raboty/', {
 </section>
 
 <div class="sheet">
-  <section class="wrap sec">
+  <section class="wrap sec" id="demo">
+    ${head('Демо-сайты', 'Как может выглядеть <em>ваш сайт</em>', 'Три демо в разных стилях и сферах. Бренды и данные в них вымышлены — это показ возможностей.')}
+    ${demos(R)}
     ${bar(R, 'Хотите сайт под свою задачу?')}
     ${nextp(R, 'uslugi/', 'Услуги')}
   </section>
@@ -422,7 +472,7 @@ page('process/', {
       ${row('Домен', 'Есть — подключим. Нет — поможем выбрать', null)}
     </div>
     ${bar(R, 'Готовы начать?')}
-    ${nextp(R, 'o-nas/', 'О нас')}
+    ${nextp(R, 'voprosy/', 'Вопросы и ответы')}
   </section>
 </div>`,
 });
@@ -454,12 +504,62 @@ page('o-nas/', {
 page('zayavka/', {
   title: 'Заявка — duo',
   desc: 'Расскажите о проекте за шесть коротких шагов — цена считается сразу.',
-  body: R => `${ptop({ label: 'Заявка', h1: 'Расскажите <em>о проекте</em>', lead: 'Шесть коротких шагов. Цена считается сразу, ответы сохраняются в этом браузере. Удобнее в Telegram — напишите в бота <a href="https://t.me/duodevops_bot" target="_blank" rel="noopener" style="text-decoration:underline;text-underline-offset:3px">@duodevops_bot</a>.' })}
+  body: R => `${ptop({ label: 'Заявка', h1: 'Расскажите <em>о проекте</em>', lead: 'Шесть коротких шагов. Цена считается сразу, ответы сохраняются в этом браузере.', extra: `<div class="acts">${tgBtn('btn glass', 'Удобнее в Telegram — открыть приложение')}</div>` })}
 
 <div class="zwrap">
 <div class="apply page" id="apply">
 ${FORM.replaceAll('{{R}}', R)}
 </div>
+</div>`,
+});
+
+page('voprosy/', {
+  title: 'Вопросы и ответы — duo',
+  desc: 'Сколько стоит сайт и бот, сколько длится работа, кто платит за домен и можно ли менять сайт самому.',
+  body: R => `${ptop({ label: 'Вопросы', h1: 'Вопросы <em>и ответы</em>', lead: 'Собрали то, что спрашивают чаще всего. Не нашли ответ — напишите нам в Telegram.' })}
+
+<div class="sheet after">
+  <section class="wrap sec">
+    ${faq(R)}
+    ${bar(R, 'Остались вопросы?', 'Оставить заявку')}
+    ${nextp(R, 'o-nas/', 'О нас')}
+  </section>
+</div>`,
+});
+
+page('privacy/', {
+  title: 'Политика обработки персональных данных — duo',
+  desc: 'Какие данные собирает сайт студии duo, зачем и как их удалить.',
+  body: R => `${ptop({ label: 'Документ', h1: 'Политика обработки <em>персональных данных</em>', lead: 'Редакция от 20 октября 2026 года.', cls: 'short' })}
+
+<div class="sheet after">
+  <section class="wrap sec">
+    <div class="doc">
+      <p>Эта политика объясняет, какие данные собирает Студия DUO (далее — «мы») через форму заявки на этом сайте, зачем они нужны и как их удалить. Политика составлена в соответствии с Федеральным законом № 152-ФЗ «О персональных данных». Для бота @duodevops_bot и мини-приложения DUO действует <a href="https://danildenis.github.io/duo-app/privacy.html" target="_blank" rel="noopener">отдельная политика</a>.</p>
+      <h2>Оператор</h2>
+      <p>Оператор персональных данных — Студия DUO. Связаться по вопросам данных: Telegram-бот <a href="https://t.me/duodevops_bot" target="_blank" rel="noopener">@duodevops_bot</a> — в приложении DUO раздел «Задать вопрос».</p>
+      <h2>Какие данные мы обрабатываем</h2>
+      <ul>
+        <li>имя, телефон и электронная почта, которые вы указали в заявке;</li>
+        <li>удобный способ связи;</li>
+        <li>ответы о бизнесе и проекте, выбранные параметры и предварительный расчёт стоимости.</li>
+      </ul>
+      <p>Мы не просим и не храним паспортные данные, платёжные реквизиты и пароли. Пока заявка не отправлена, черновик ответов хранится только в вашем браузере и никуда не передаётся; после отправки он удаляется.</p>
+      <h2>Зачем</h2>
+      <ul>
+        <li>принять заявку и связаться с вами по ней выбранным способом;</li>
+        <li>оценить проект и назвать стоимость и сроки.</li>
+      </ul>
+      <h2>Основание</h2>
+      <p>Ваше согласие, которое вы даёте отметкой «Соглашаюсь на обработку персональных данных» перед отправкой заявки. Без согласия заявка не отправляется.</p>
+      <h2>Кому передаём</h2>
+      <p>Данные видят только менеджеры Студии DUO: заявка приходит им в рабочий чат Telegram. Мы не продаём и не передаём данные третьим лицам. Заявка проходит через сервер, который мы арендуем у хостинг-провайдера.</p>
+      <h2>Сколько храним</h2>
+      <p>До достижения целей обработки или до отзыва согласия — смотря что наступит раньше.</p>
+      <h2>Ваши права</h2>
+      <p>Вы можете узнать, какие ваши данные у нас есть, попросить исправить или удалить их, а также отозвать согласие. Напишите в бота <a href="https://t.me/duodevops_bot" target="_blank" rel="noopener">@duodevops_bot</a> — ответим в течение 10 рабочих дней.</p>
+    </div>
+  </section>
 </div>`,
 });
 

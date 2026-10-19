@@ -82,7 +82,6 @@
   document.querySelectorAll('.up').forEach(el => io.observe(el));
 
   // ── заявка: своя страница /zayavka/, 6 шагов и предварительный расчёт ──
-  // Отправка не подключена: см. send() — Денис подключит рабочий чат.
   const form = document.getElementById('applyForm');
   if (!form) return;
   const steps = [...form.querySelectorAll('.step')], bars = [...form.querySelectorAll('.prog i')];
@@ -101,7 +100,7 @@
     form.querySelector('.site-only').style.display = site ? '' : 'none';
     let sum = 10000 + Math.max(0, n - 3) * 3000;
     opts.forEach(o => { if (PRICE[o]) sum += PRICE[o][0] * (PRICE[o][1] ? n : 1); });
-    if (opts.includes('urgent')) sum = Math.round(sum * 1.25 / 100) * 100;
+    if (opts.includes('urgent')) sum = Math.round(sum * 1.25);
     document.getElementById('pagesOut').textContent = `${n} ${plural(n)}`;
     const sumEl = document.getElementById('estSum'), note = document.getElementById('estNote');
     if (type === 'Telegram-бот') { sumEl.textContent = 'от ' + rub(BOT_BASE); note.textContent = 'База: меню, ответы на вопросы и заявки в Telegram. Функции сверх базы — по прайсу, сервер для бота оплачивается отдельно.'; }
@@ -162,22 +161,34 @@
     // при смене шага — к началу формы и фокус на заголовок шага
     if (ready) { form.scrollIntoView({ block: 'start', behavior: reduce ? 'auto' : 'smooth' }); steps[i].querySelector('h3')?.focus({ preventScroll: true }); }
   }
-  function send() {
+  // заявка уходит на сервер бота DUO, оттуда — менеджерам в рабочий чат Telegram
+  const API = 'https://77-110-111-44.sslip.io/api/site-form';
+  const errBox = document.getElementById('sendErr');
+  async function send() {
     const d = {}; new FormData(form).forEach((v, k) => { d[k] = d[k] ? [].concat(d[k], v) : v; });
     const { sum } = calc();
-    const payload = { ...d, estimate: sum, sentAt: new Date().toISOString() };
-    // TODO (Денис): отправить payload в рабочий чат Telegram и записать заявку; почта — для уведомлений о статусе.
-    console.info('duo · заявка (отправка не подключена)', payload);
+    const res = await fetch(API, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ ...d, page: location.href }) });
+    const out = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(out.error || 'Заявка не отправилась');
     const card = document.getElementById('doneCard'), b = document.createElement('b');
     b.textContent = d.biz || ''; card.replaceChildren(b, ` · ${d.type}${sum ? ' · от ' + rub(sum) : ''}`, document.createElement('br'),
       `${d.name}, ${d.phone}`, document.createElement('br'), `${d.email} · связь: ${d.contact}`);
     try { localStorage.removeItem(KEY); } catch (_) {}
   }
-  form.addEventListener('submit', e => {
+  let sending = false;
+  form.addEventListener('submit', async e => {
     e.preventDefault();
+    if (sending) return;
     if (cur === 6) { location.href = form.dataset.home || '../'; return; }
     if (!valid(steps[cur])) return;
-    if (cur === 5) { send(); show(6); } else show(cur + 1);
+    if (cur < 5) return show(cur + 1);
+    sending = true; nextB.disabled = true; nextB.firstChild.textContent = 'Отправляем… '; errBox.classList.remove('on');
+    try { await send(); show(6); }
+    catch (err) {
+      errBox.replaceChildren(`${err instanceof TypeError ? 'Нет связи с сервером' : err.message}. Попробуйте ещё раз или напишите нам в `, Object.assign(document.createElement('a'), { href: 'https://t.me/duodevops_bot?startapp', target: '_blank', rel: 'noopener', textContent: 'приложении DUO в Telegram' }), '.');
+      errBox.classList.add('on'); nextB.firstChild.textContent = 'Отправить ';
+    }
+    finally { sending = false; nextB.disabled = false; }
   });
   backB.addEventListener('click', () => cur > 0 && show(cur - 1));
 

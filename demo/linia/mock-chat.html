@@ -1,0 +1,52 @@
+<!doctype html>
+<!-- Макет чата с ботом «Линия» для согласования: ?v=start — приветствие, ?v=done — карточка записи и напоминание -->
+<html lang="ru"><head><meta charset="utf-8"><meta name="robots" content="noindex"><meta name="viewport" content="width=390">
+<style>
+*{box-sizing:border-box}
+body{margin:0;width:390px;height:844px;overflow:hidden;font-family:-apple-system,"SF Pro Text",Roboto,sans-serif;background:#0E1621 radial-gradient(rgba(255,255,255,.035) 1.2px,transparent 1.4px) 0 0/22px 22px;color:#fff;display:flex;flex-direction:column}
+.st{height:54px;display:flex;justify-content:space-between;align-items:center;padding:6px 30px 0 36px;font:600 16px -apple-system,sans-serif;background:#17212B}
+.hd{display:grid;grid-template-columns:40px 1fr 40px;align-items:center;padding:4px 12px 10px;background:#17212B}
+.hd .b{color:#6AB2F2;font-size:34px;line-height:.8;font-weight:300}
+.hd .t{text-align:center;line-height:1.2}.hd .t b{font-size:16px}.hd .t small{display:block;font-size:13px;color:#6D8399}
+.hd .a{justify-self:end;width:38px;height:38px;border-radius:50%;background:url(img/hero.jpg) center 20%/cover}
+.ms{flex:1;display:flex;flex-direction:column;justify-content:flex-end;gap:6px;padding:12px 8px;overflow:hidden}
+.m{max-width:86%;border-radius:16px;background:#182533;overflow:hidden;font-size:15px;line-height:1.4;align-self:flex-start;border-bottom-left-radius:5px}
+.m.me{align-self:flex-end;background:#2B5278;border-bottom-right-radius:5px;border-bottom-left-radius:16px;padding:8px 12px}
+.m img{display:block;width:100%;height:200px;object-fit:cover}
+.m .tx{padding:9px 12px 10px}
+.m .tm{float:right;margin:6px 0 0 10px;font-size:11.5px;color:#6D8399}
+.kb{display:grid;grid-template-columns:1fr 1fr;gap:5px;max-width:86%}
+.kb span{display:block;text-align:center;padding:10px 8px;border-radius:12px;background:rgba(40,60,82,.85);font-size:14px}
+.kb .w{grid-column:1/-1}
+.rk{padding:8px 8px 6px;background:#17212B;display:grid;gap:6px}
+.rk span{display:block;text-align:center;padding:13px;border-radius:12px;background:#2B5278;font-size:15.5px;font-weight:500}
+.in{display:flex;align-items:center;gap:10px;padding:8px 12px 30px;background:#17212B;color:#6D8399}
+.in .f{flex:1;height:38px;border-radius:19px;background:#0E1621;display:flex;align-items:center;padding:0 14px;font-size:15px}
+.mb{display:inline-flex;align-items:center;gap:6px;height:38px;padding:0 14px;border-radius:19px;background:#2B5278;color:#fff;font-size:14px;font-weight:600}
+.day{align-self:center;padding:3px 10px;border-radius:10px;background:rgba(0,0,0,.28);color:#c9d3dd;font-size:12.5px;margin-bottom:4px}
+b{font-weight:600}
+</style></head><body>
+<div class="st"><span>9:41</span><span>●●● ◔</span></div>
+<div class="hd"><span class="b">‹</span><div class="t"><b>Линия · запись</b><small>бот</small></div><span class="a"></span></div>
+<div class="ms" id="ms"></div>
+<div id="bottom"></div>
+<script>
+const v = new URLSearchParams(location.search).get('v') || 'start';
+const ms = document.getElementById('ms'), bottom = document.getElementById('bottom');
+if (v === 'start') {
+  ms.innerHTML = `<div class="day">Сегодня</div>
+  <div class="m me" style="align-self:flex-end">/start</div>
+  <div class="m"><img src="img/hero.jpg" style="object-position:center 25%"><div class="tx"><b>Здравствуйте! Это студия «Линия» 🌿</b><br>Брови и ресницы на Образцовой, 5 — ежедневно 10:00–21:00.<br><br>Запишитесь за минуту: выберите процедуру, мастера и удобное время — без звонков.<span class="tm">12:04</span></div></div>
+  <div class="kb"><span>💳 Цены</span><span>📍 Как добраться</span><span class="w">🗓 Мои записи</span></div>`;
+  bottom.innerHTML = `<div class="rk"><span>📅 Записаться</span></div><div class="in"><span class="mb">☰ Меню</span><span class="f">Сообщение</span></div>`;
+} else {
+  ms.innerHTML = `<div class="day">Сегодня</div>
+  <div class="m"><img src="img/lash-lam.jpg"><div class="tx"><b>Вы записаны ✅</b><br>Ламинирование ресниц · 60 мин<br>Завтра в 17:30 · мастер Мария<br>2 600 ₽ · ул. Образцовая, 5<span class="tm">12:06</span></div></div>
+  <div class="kb"><span>🔁 Перенести</span><span>✖️ Отменить</span><span class="w">📍 Как добраться</span></div>
+  <div class="day" style="margin-top:10px">Завтра</div>
+  <div class="m"><div class="tx">⏰ <b>Напоминание</b><br>Сегодня в 17:30 ждём вас на ламинирование ресниц. Мастер Мария.<br>Если планы изменились — перенесите запись кнопкой ниже.<span class="tm">15:30</span></div></div>
+  <div class="kb"><span>👍 Буду</span><span>🔁 Перенести</span></div>`;
+  bottom.innerHTML = `<div class="rk"><span>📅 Записаться</span></div><div class="in"><span class="mb">☰ Меню</span><span class="f">Сообщение</span></div>`;
+}
+</script>
+</body></html>

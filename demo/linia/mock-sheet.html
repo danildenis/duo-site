@@ -1,0 +1,40 @@
+<!doctype html>
+<!-- Лист макетов бота «Линия» для согласования (рисуется в PNG) -->
+<html lang="ru"><head><meta charset="utf-8"><meta name="robots" content="noindex">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600&display=swap" rel="stylesheet">
+<style>
+body{margin:0;width:2500px;height:1060px;background:#EDE8E3;font-family:Manrope,sans-serif;color:#2A2321}
+h1{margin:0;padding:40px 56px 0;font-size:34px;font-weight:600}
+p.s{margin:8px 56px 0;font-size:18px;color:#7A6E69}
+.row{display:flex;gap:28px;padding:34px 56px 0}
+.ph{flex:none}
+.fr{width:296px;height:640px;border-radius:46px;padding:9px;background:linear-gradient(150deg,#6b6d73,#1a1b1e 40%,#2c2d31 70%,#73757b);box-shadow:0 30px 60px rgba(40,30,25,.25)}
+.sc{position:relative;width:278px;height:622px;border-radius:38px;overflow:hidden;background:#000}
+.sc iframe{position:absolute;left:0;top:0;width:390px;height:844px;border:0;transform:scale(.7128);transform-origin:0 0}
+.isl{position:absolute;z-index:3;left:50%;top:9px;width:84px;height:24px;margin-left:-42px;border-radius:14px;background:#000}
+.bar{position:absolute;z-index:2;left:0;right:0;top:0;height:74px;background:#F6F1EC;color:#2A2321;font:600 12px -apple-system,sans-serif}
+.bar .s{display:flex;justify-content:space-between;padding:12px 22px 0 26px}
+.bar .h{display:grid;grid-template-columns:70px 1fr 70px;align-items:center;padding:8px 12px 0;font-size:12.5px}
+.bar .h b{text-align:center;font-size:13px}
+.bar .h .x{color:#9A6457}.bar .h .d{text-align:right;font-size:16px;color:#9A6457}
+.sc iframe.app{top:74px;height:768px}
+.cap{margin-top:16px;font-size:17px;font-weight:600}
+.cap small{display:block;font-weight:400;color:#7A6E69;font-size:14.5px;margin-top:3px;max-width:290px}
+</style></head><body>
+<h1>Бот «Линия» — запись в студию бровей и ресниц</h1>
+<p class="s">Чат → кнопка «Записаться» открывает мини-приложение → 4 шага → подтверждение и напоминание в чате</p>
+<div class="row" id="row"></div>
+<script>
+const items = [
+  ['mock-chat.html?v=start', '1. Приветствие в чате', 'Фото студии, кнопка «Записаться» внизу, цены и адрес'],
+  ['index.html', '2. Мини-приложение', 'Процедуры с фото, длительностью и ценой'],
+  ['index.html?s=master', '3. Мастер', 'Специализация и опыт'],
+  ['index.html?s=time', '4. Дата и время', 'Лента дней, слоты утро/день/вечер, занятые зачёркнуты'],
+  ['index.html?s=confirm', '5. Проверка', 'Итог записи, имя из Telegram, телефон'],
+  ['index.html?s=done', '6. Готово', 'Экран успеха в приложении'],
+  ['mock-chat.html?v=done', '7. В чате', 'Карточка записи, перенос/отмена, напоминание'],
+];
+const bar = '<div class="bar"><div class="s"><span>9:41</span><span>●●● ◔</span></div><div class="h"><span class="x">Закрыть</span><b>Линия · запись</b><span class="d">⋯</span></div></div>';
+document.getElementById('row').innerHTML = items.map(([u, t, d]) => { const app = u.startsWith('index'); return `<div class="ph"><div class="fr"><div class="sc"><i class="isl"></i>${app ? bar : ''}<iframe class="${app ? 'app' : ''}" src="${u}" scrolling="no"></iframe></div></div><div class="cap">${t}<small>${d}</small></div></div>`; }).join('');
+</script>
+</body></html>

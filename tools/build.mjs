@@ -115,7 +115,7 @@ const header = (R, cur) => `<header class="notch" id="notch">
   <a class="home" href="${R}" aria-label="duo — на главную"></a>
   <nav class="r" aria-label="Разделы">${nav(R, cur, NAV_R)}</nav>
   <button class="burger" type="button" aria-label="Меню" aria-expanded="false"><i></i><i></i></button>
-  <div class="menu-m">${nav(R, cur, [['', 'Главная'], ...NAV_L, ...NAV_R])}<a class="tg-link" href="${TG_APP}" target="_blank" rel="noopener">${TG} Открыть в Telegram</a><a class="btn white" href="${R}zayavka/">Оставить заявку</a></div>
+  <div class="menu-m">${nav(R, cur, [['', 'Главная'], ...NAV_L, ...NAV_R])}<a class="tg-link" href="${TG_APP}" target="_blank" rel="noopener">${TG} Открыть в Telegram</a><a class="btn white" href="${R}zayavka/">${CTA}</a></div>
 </header>`;
 
 const footer = R => `<footer class="foot dark" id="contacts">
@@ -190,8 +190,13 @@ const head = (label, h2, lead = '', more = '') => `<div class="head up">
       ${lead ? `<p class="lead">${lead}</p>` : ''}${more}
     </div>`;
 const more = (href, text) => `<a class="more" href="${href}">${text} ${ARROW}</a>`;
-const bar = (R, text, btn = 'Оставить заявку', href = 'zayavka/') =>
-  `<div class="bar up"><span>${text}<em class="alt">или посчитайте в приложении DUO — оно откроется прямо в Telegram</em></span><div class="acts"><a class="btn" href="${R}${href}">${btn} ${ARROW}</a>${tgBtn()}</div></div>`;
+// Финальная плашка страницы — одно главное действие. Telegram — тихой ссылкой под текстом, не второй кнопкой.
+// Внутри разделов вместо плашек — ссылка step() с уже выбранным типом проекта.
+const CTA = 'Рассчитать стоимость';
+const TG_ALT = `Удобнее в Telegram? <a href="${TG_APP}" target="_blank" rel="noopener">Откройте приложение DUO</a> — там тот же расчёт`;
+const bar = (R, text, { btn = CTA, href = `${R}zayavka/`, alt = TG_ALT, out = false } = {}) =>
+  `<div class="bar up"><span>${text}<em class="alt">${alt}</em></span><div class="acts"><a class="btn" href="${href}"${out ? ' target="_blank" rel="noopener"' : ''}>${btn} ${ARROW}</a></div></div>`;
+const step = (href, text) => `<div class="step-link up">${more(href, text)}</div>`;
 const nextp = (R, href, text) => `<div class="nextp"><span>Дальше</span><a href="${R}${href}">${text} ${NEXT}</a></div>`;
 const row = (n, d, p = '') => `<div class="row"><span class="n">${n}</span><span class="d">${d}</span>${p !== null ? `<span class="p">${p}</span>` : ''}</div>`;
 
@@ -274,7 +279,6 @@ page('', {
       <a class="tile up" href="${R}uslugi/#support"><h3>Поддержка</h3><p>Правки, обновления и помощь после запуска — для сайтов и ботов</p><span class="p">${rub(SITE.support)} в месяц ${ARROW}</span></a>
     </div>
     <a class="teaser up" href="${R}razbor/"><div><b>Уже есть сайт? Бесплатно разберём его</b><span>Пришлите ссылку — ответим тремя конкретными улучшениями</span></div><span class="btn white">Получить разбор ${ARROW}</span></a>
-    ${bar(R, 'Хотите узнать точную цену?', 'Посчитать стоимость')}
   </section>
 </div>
 
@@ -293,7 +297,7 @@ page('', {
 
   <section class="wrap sec" id="about">
     ${team(R, false)}
-    ${bar(R, 'Обсудим ваш проект?')}
+    ${bar(R, 'Узнайте цену <em>своего проекта</em>')}
   </section>
 </div>`,
 });
@@ -313,7 +317,7 @@ page('uslugi/', {
       ${row('Оплата и админка', 'Приём оплаты на сайте и панель, где вы сами меняете содержимое', '+6 000 / +8 000 ₽')}
       ${row('Тексты и SEO', 'Напишем тексты за вас и настроим базовое SEO, чтобы сайт находили', 'от 500 ₽')}
     </div>
-    ${bar(R, 'Нужен сайт?', 'Посчитать сайт', 'zayavka/?type=site')}
+    ${step(`${R}zayavka/?type=site`, 'Рассчитать стоимость сайта')}
   </section>
 
   <section class="wrap sec" id="bots">
@@ -327,7 +331,7 @@ page('uslugi/', {
       ${row('Нейросеть', 'Ответы нейросетью на вопросы клиентов', 'от +10 000 ₽')}
     </div>
     <p class="note">Сервер для бота оплачивается отдельно: ${BOT.server} в месяц. ${more(`${R}raboty/#bots`, 'Попробовать демо-бота')}</p>
-    ${bar(R, 'Нужен бот?', 'Рассказать о боте', 'zayavka/?type=bot')}
+    ${step(`${R}zayavka/?type=bot`, 'Рассчитать стоимость бота')}
   </section>
 
   <section class="wrap sec" id="support">
@@ -335,6 +339,7 @@ page('uslugi/', {
     <div class="rows">
       ${row('Поддержка сайта или бота', 'Правки, обновления и помощь после запуска', `${rub(SITE.support)}<small>в месяц</small>`)}
     </div>
+    ${bar(R, 'Соберите свой проект <em>и узнайте итог</em>')}
     ${nextp(R, 'raboty/', 'Наши работы')}
   </section>
 </div>`,
@@ -384,8 +389,8 @@ page('raboty/', {
   </section>
 
   <section class="wrap sec">
-    ${bar(R, 'Хотите сайт или бота под свою задачу?')}
-    ${nextp(R, 'uslugi/', 'Услуги')}
+    ${bar(R, 'Хотите сайт или бота <em>под свою задачу?</em>')}
+    ${nextp(R, 'ceny/', 'Цены')}
   </section>
 </div>`,
 });
@@ -418,7 +423,7 @@ CASES.forEach((c, i) => {
     <div class="facts points">
       ${c.items.map(([n, d]) => `<div class="fact up"><b>${n}</b><span>${d}</span></div>`).join('\n      ')}
     </div>
-    ${bar(R, 'Хотите такой же сайт для себя?')}
+    ${bar(R, 'Хотите такой же сайт <em>для себя?</em>')}
     ${nextp(R, `raboty/${nx.slug}/`, nx.name)}
   </section>
 </div>`,
@@ -445,7 +450,7 @@ page('ceny/', {
       ${row('Срочно', 'Быстрее обычных 10 дней — от 5 дней', '+25%<small>к разработке</small>')}
       ${row('Поддержка', 'Правки, обновления и помощь после запуска', `${rub(SITE.support)}<small>в месяц</small>`)}
     </div>
-    ${bar(R, 'Соберите свой сайт и узнайте итог', 'Открыть калькулятор', 'zayavka/?type=site')}
+    ${step(`${R}zayavka/?type=site`, 'Рассчитать стоимость сайта')}
   </section>
 
   <section class="wrap sec" id="bots">
@@ -456,7 +461,7 @@ page('ceny/', {
       ${row('Срочно', '', '+25%<small>к разработке, до 5 дней</small>').replace('<span class="d"></span>', '')}
       ${row('Поддержка', '', `${rub(BOT.support)}<small>в месяц</small>`).replace('<span class="d"></span>', '')}
     </div>
-    ${bar(R, 'Расскажите, что должен уметь бот', 'Оставить заявку', 'zayavka/?type=bot')}
+    ${bar(R, 'Соберите своего бота <em>и узнайте итог</em>', { href: `${R}zayavka/?type=bot`, btn: 'Рассчитать стоимость бота' })}
     ${nextp(R, 'process/', 'Как мы работаем')}
   </section>
 </div>`,
@@ -488,7 +493,7 @@ page('process/', {
       ${row('Материалы', 'Логотип и фото, если есть. Нет — подскажем, что делать', null)}
       ${row('Домен', 'Есть — подключим. Нет — поможем выбрать', null)}
     </div>
-    ${bar(R, 'Готовы начать?')}
+    ${bar(R, 'Первый шаг — <em>расчёт стоимости</em>')}
     ${nextp(R, 'voprosy/', 'Вопросы и ответы')}
   </section>
 </div>`,
@@ -512,8 +517,8 @@ page('o-nas/', {
       ${row('Цена заранее', 'Стоимость сайта видно в калькуляторе до начала работы', 'без сюрпризов')}
       ${row('Живые люди', 'Отвечаем в Telegram сами, без менеджеров. Можем взять на себя тексты, домен и хостинг', 'на связи')}
     </div>
-    ${bar(R, 'Обсудим ваш проект?')}
-    ${nextp(R, 'zayavka/', 'Оставить заявку')}
+    ${bar(R, 'Обсудим <em>ваш проект?</em>')}
+    ${nextp(R, 'raboty/', 'Наши работы')}
   </section>
 </div>`,
 });
@@ -585,7 +590,7 @@ page('voprosy/', {
 <div class="sheet after">
   <section class="wrap sec">
     ${faq(R)}
-    ${bar(R, 'Остались вопросы?', 'Оставить заявку')}
+    ${bar(R, 'Не нашли ответ? <em>Спросите нас</em>', { btn: `${TG} Спросить в Telegram`, href: TG_APP, out: true, alt: `Отвечаем сами, без менеджеров. Или сразу <a href="${R}zayavka/">рассчитайте стоимость</a>` })}
     ${nextp(R, 'o-nas/', 'О нас')}
   </section>
 </div>`,

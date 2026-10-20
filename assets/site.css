@@ -231,7 +231,10 @@ h2 em{display:block;font-style:normal;color:var(--ink3)}
   .notch{--w:calc(100vw - 2*var(--fw) - 32px);--c:132px}
   .notch nav{display:none}
   .endbar{flex-direction:column;align-items:flex-start}
-  .light::after{opacity:.4;background:repeating-linear-gradient(90deg,rgba(255,255,255,.045) 0 1px,transparent 1px 14px,rgba(0,0,0,.18) 14px 15px,transparent 15px 30px)}
+  .light::after{opacity:.22;background:repeating-linear-gradient(90deg,rgba(255,255,255,.045) 0 1px,transparent 1px 14px,rgba(0,0,0,.18) 14px 15px,transparent 15px 30px)}
+  /* на телефоне ссылки подвала — под палец (не меньше 40 px) */
+  .foot ul a{display:block;padding:11px 0}
+  .logo{width:84vw}
 }
 
 /* ── заявка: окно поверх сайта, 6 шагов, расчёт цены. Отправка не подключена ── */

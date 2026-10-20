@@ -505,6 +505,21 @@ textarea.inp{min-height:96px;resize:vertical;line-height:1.5}
 .viewer .stage{display:grid;justify-items:center}
 .viewer .shot{width:min(1100px,100%);aspect-ratio:1440/930;animation:stepin .5s var(--ease)}
 .viewer .phone{width:min(340px,82%);aspect-ratio:390/844;animation:stepin .5s var(--ease)}
+/* кейс: телефон как настоящий iPhone — металлическая рамка, кнопки, «островок», строка состояния */
+.viewer .iph{container-type:inline-size;aspect-ratio:auto;overflow:visible;border:0;border-radius:15.5cqw;padding:3.2cqw;
+  background:linear-gradient(150deg,#6b6d73 0%,#2a2b2f 18%,#1a1b1e 50%,#2c2d31 82%,#73757b 100%);
+  box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.18),inset 0 0 0 4px #0b0b0c,0 2px 0 1px rgba(0,0,0,.4),0 40px 90px rgba(0,0,0,.55)}
+.iph .ib{position:absolute;width:1.1cqw;border-radius:1cqw;background:linear-gradient(90deg,#3a3b3f,#7c7e84,#3a3b3f)}
+.iph .act{left:-.8cqw;top:17%;height:4.5%}.iph .v1{left:-.8cqw;top:25%;height:8.5%}.iph .v2{left:-.8cqw;top:35.5%;height:8.5%}.iph .pw{right:-.8cqw;top:28.5%;height:13.5%}
+.iph .scr{position:relative;border-radius:12.5cqw;overflow:hidden;background:#000;box-shadow:0 0 0 1cqw #000}
+.iph .sb{position:relative;height:13.5cqw;display:flex;align-items:center;justify-content:space-between;padding:1.4cqw 7.5cqw 0 11cqw;color:#fff;font:600 4.6cqw/1 -apple-system,"SF Pro Text",Roboto,sans-serif}
+.iph .isl{position:absolute;left:50%;top:3.2cqw;width:31cqw;height:9cqw;margin-left:-15.5cqw;border-radius:5cqw;background:#000;box-shadow:inset 0 0 0 1px #151515}
+.iph .isl::after{content:"";position:absolute;right:3.2cqw;top:50%;width:3cqw;height:3cqw;margin-top:-1.5cqw;border-radius:50%;background:radial-gradient(circle at 40% 40%,#2a3550 0,#0b0d14 55%,#000 100%)}
+.iph .ic{display:flex;align-items:center;gap:1.6cqw}
+.iph .ic svg{width:5cqw;height:3.5cqw;fill:#fff}
+.iph .tg-bat{width:7.2cqw;height:3.5cqw;border-width:1px;border-radius:1.2cqw;padding:.45cqw}
+.iph video{display:block;width:100%;height:auto;aspect-ratio:390/844;object-fit:cover;background:#000}
+.iph .hb{position:absolute;left:50%;bottom:2.2cqw;width:36cqw;height:1.4cqw;margin-left:-18cqw;border-radius:1cqw;background:rgba(0,0,0,.55);box-shadow:0 0 0 .5px rgba(255,255,255,.4)}
 .viewer[data-view="desktop"] .phone,.viewer[data-view="phone"] .shot{display:none}
 
 /* демо-боты: чат в стиле Telegram */

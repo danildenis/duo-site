@@ -21,6 +21,8 @@ const SITE_URL = 'https://danildenis.github.io/duo-site/';
 const TG = '<svg class="tgi" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21.4 4.2 18.3 19c-.2 1-.9 1.3-1.7.8l-4.7-3.5-2.3 2.2c-.3.3-.5.5-1 .5l.3-4.8 8.8-8c.4-.3-.1-.5-.6-.2L6.3 12.8l-4.7-1.5c-1-.3-1-1 .2-1.5L20.1 2.7c.8-.3 1.6.2 1.3 1.5Z"/></svg>';
 const tgBtn = (cls = 'btn line', text = 'Открыть в Telegram') => `<a class="${cls}" href="${TG_APP}" target="_blank" rel="noopener">${TG} ${text}</a>`;
 const ext = (href, text, cls = 'btn glass') => `<a class="${cls}" href="${href}" target="_blank" rel="noopener">${text} ${ARROW}</a>`;
+// значки строки состояния iPhone: сеть, Wi-Fi, батарея
+const STATUS_ICONS = '<svg viewBox="0 0 18 12" aria-hidden="true"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5.5" width="3" height="6.5" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg><svg viewBox="0 0 16 12" aria-hidden="true"><path d="M8 2.6c2.3 0 4.4.9 6 2.4l1.1-1.2A10.3 10.3 0 0 0 8 1 10.3 10.3 0 0 0 .9 3.8L2 5c1.6-1.5 3.7-2.4 6-2.4Zm0 3.2c1.4 0 2.7.5 3.7 1.4l1.1-1.2A7.1 7.1 0 0 0 8 4.2 7.1 7.1 0 0 0 3.2 6l1.1 1.2c1-.9 2.3-1.4 3.7-1.4Zm0 3.2c.6 0 1.1.2 1.5.6L8 11.2 6.5 9.6c.4-.4.9-.6 1.5-.6Z"/></svg><span class="tg-bat"><i></i></span>';
 const rub = n => n.toLocaleString('ru-RU').replace(/\s/g, ' ') + ' ₽';
 
 // ── прайс (копия утверждённых цен; при смене прайса — поменять и здесь, и в assets/site.js) ──
@@ -374,7 +376,7 @@ page('raboty/', {
         <div class="tg">
           <i class="tg-btn tg-act"></i><i class="tg-btn tg-vol1"></i><i class="tg-btn tg-vol2"></i><i class="tg-btn tg-pwr"></i>
           <div class="tg-in tg-app">
-            <div class="tg-status light"><span class="tg-time">9:41</span><i class="tg-island"></i><span class="tg-ic"><svg viewBox="0 0 18 12" aria-hidden="true"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5.5" width="3" height="6.5" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg><svg viewBox="0 0 16 12" aria-hidden="true"><path d="M8 2.6c2.3 0 4.4.9 6 2.4l1.1-1.2A10.3 10.3 0 0 0 8 1 10.3 10.3 0 0 0 .9 3.8L2 5c1.6-1.5 3.7-2.4 6-2.4Zm0 3.2c1.4 0 2.7.5 3.7 1.4l1.1-1.2A7.1 7.1 0 0 0 8 4.2 7.1 7.1 0 0 0 3.2 6l1.1 1.2c1-.9 2.3-1.4 3.7-1.4Zm0 3.2c.6 0 1.1.2 1.5.6L8 11.2 6.5 9.6c.4-.4.9-.6 1.5-.6Z"/></svg><span class="tg-bat"><i></i></span></span></div>
+            <div class="tg-status light"><span class="tg-time">9:41</span><i class="tg-island"></i><span class="tg-ic">${STATUS_ICONS}</span></div>
             <div class="tg-apphead"><span>Закрыть</span><b>Линия · запись</b><span>⋯</span></div>
             <iframe src="${R}demo/linia/" title="Мини-приложение записи «Линия»" loading="lazy"></iframe>
             <i class="tg-home dark"></i>
@@ -407,7 +409,9 @@ CASES.forEach((c, i) => {
       </div>
       <div class="stage">
         <div class="shot"><video src="${R}media/cases/${c.slug}.mp4" poster="${R}img/work/${c.img}.jpg" muted loop playsinline preload="none" data-play aria-label="Прокрутка сайта ${c.name} на компьютере"></video></div>
-        <div class="phone"><video src="${R}media/cases/${c.slug}-m.mp4" poster="${R}img/work/${c.img}-m.jpg" muted loop playsinline preload="none" data-play aria-label="Прокрутка сайта ${c.name} на телефоне"></video></div>
+        <div class="phone iph"><i class="ib act"></i><i class="ib v1"></i><i class="ib v2"></i><i class="ib pw"></i>
+          <div class="scr"><div class="sb"><span>9:41</span><i class="isl"></i><span class="ic">${STATUS_ICONS}</span></div><video src="${R}media/cases/${c.slug}-m.mp4" poster="${R}img/work/${c.img}-m.jpg" muted loop playsinline preload="none" data-play aria-label="Прокрутка сайта ${c.name} на телефоне"></video><i class="hb"></i></div>
+        </div>
       </div>
     </div>`,
     })}

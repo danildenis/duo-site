@@ -2,7 +2,7 @@
 // Шапка, подвал и <head> — здесь, в одном месте; содержимое страниц — ниже, в PAGES.
 // Готовые страницы (index.html, uslugi/index.html …) кладутся в корень репозитория — их раздаёт GitHub Pages.
 // Цены — из прайса проекта DUO: src/products/site/pricing.config.ts и src/products/bot/pricing.config.ts.
-import { readFileSync, writeFileSync, mkdirSync, readdirSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -83,11 +83,6 @@ const CASES = [
     facts: [['9', 'вкусов в каталоге'], ['Слои', 'анимация разреза при прокрутке'], ['Telegram', 'заказ прямо из корзины']],
   },
 ];
-
-// сайт кейса целиком: снимок, нарезанный на части (tools/shoot_cases.py) — листается внутри рамки
-const CASE_SHOTS = readdirSync(join(ROOT, 'img/cases')).filter(f => f.endsWith('.jpg')).sort((x, y) => x.localeCompare(y, 'en', { numeric: true }));
-const sitePages = (R, slug, suffix, alt) => CASE_SHOTS.filter(f => new RegExp(`^${slug}${suffix}-\\d+\\.jpg$`).test(f))
-  .map((f, i) => `<img src="${R}img/cases/${f}" alt="${i ? '' : alt}" loading="lazy" decoding="async">`).join('');
 
 // ── вопросы и ответы (только то, что есть в прайсе и в процессе) ──
 const FAQ = [
@@ -422,10 +417,9 @@ CASES.forEach((c, i) => {
         <button type="button" data-v="phone" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M11 18.5h2"/></svg>Телефон</button>
       </div>
       <div class="stage">
-        <div class="shot"><div class="site" tabindex="0" aria-label="Сайт ${c.name} на компьютере — листайте">${sitePages(R, c.slug, '', `Сайт ${c.name} на компьютере`)}</div></div>
-        <div class="phone"><div class="site" tabindex="0" aria-label="Сайт ${c.name} на телефоне — листайте">${sitePages(R, c.slug, '-m', `Сайт ${c.name} на телефоне`)}</div></div>
+        <div class="shot"><video src="${R}media/cases/${c.slug}.mp4" poster="${R}img/work/${c.img}.jpg" muted loop playsinline preload="none" data-play aria-label="Прокрутка сайта ${c.name} на компьютере"></video></div>
+        <div class="phone"><video src="${R}media/cases/${c.slug}-m.mp4" poster="${R}img/work/${c.img}-m.jpg" muted loop playsinline preload="none" data-play aria-label="Прокрутка сайта ${c.name} на телефоне"></video></div>
       </div>
-      <p class="site-hint">Листайте сайт внутри экрана</p>
     </div>`,
     })}
 

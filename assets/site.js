@@ -51,12 +51,20 @@
 
   // работы: предыдущая карточка уходит вглубь и темнеет, когда на неё ложится следующая
   const cases = [...document.querySelectorAll('.case')];
-  const stackMQ = matchMedia('(min-width:861px)');
+  const wideMQ = matchMedia('(min-width:861px)');
   cases.forEach(c => c.insertAdjacentHTML('beforeend', '<i class="dim" aria-hidden="true"></i>'));
   const photo = document.querySelector('.photo img');
   const work = document.querySelector('.work');
-  let caseTop = 0, caseH = 0;
-  const measure = () => { if (cases[0]) { caseTop = parseFloat(getComputedStyle(cases[0]).top); caseH = cases[0].offsetHeight; } };
+  // на компьютере карточки одной высоты и встают под вырезом. На телефоне высота — по содержимому: если карточка
+  // выше экрана, она встаёт так, чтобы был виден её низ (иначе скриншот сайта спрятался бы под следующей)
+  let stick = [], caseH = [];
+  const measure = () => {
+    cases.forEach(c => {
+      c.style.top = '';
+      if (!wideMQ.matches) { const base = parseFloat(getComputedStyle(c).top); c.style.top = Math.min(base, innerHeight - c.offsetHeight - 12) + 'px'; }
+    });
+    stick = cases.map(c => parseFloat(getComputedStyle(c).top)); caseH = cases.map(c => c.offsetHeight);
+  };
   measure();
 
   // вопросы на главной: таблетки проявляются из размытия по одной, в перемешанном порядке, пока блок закреплён
@@ -100,10 +108,10 @@
       const k = Math.round(p * words.length);
       if (k !== lastK) { words.forEach((w, i) => w.classList.toggle('on', i < k)); lastK = k; }
     }
-    if (cases.length > 1 && stackMQ.matches && live.has(work)) {
+    if (cases.length > 1 && live.has(work)) {
       const tops = cases.map(c => c.getBoundingClientRect().top);
       for (let i = 0; i < cases.length - 1; i++) {
-        const q = Math.min(1, Math.max(0, 1 - (tops[i + 1] - caseTop) / caseH));
+        const q = Math.min(1, Math.max(0, 1 - (tops[i + 1] - stick[i + 1]) / caseH[i]));
         cases[i].style.transform = `scale(${(1 - q * .06).toFixed(4)})`; cases[i].lastElementChild.style.opacity = (q * .55).toFixed(3);
       }
     }
@@ -131,7 +139,7 @@
     }
   }
   const onScroll = () => { if (!ticking) { ticking = true; requestAnimationFrame(frame); } };
-  if (!reduce) { addEventListener('scroll', onScroll, { passive: true }); addEventListener('resize', () => { measure(); if (!stackMQ.matches) cases.forEach(c => { c.style.transform = ''; c.lastElementChild.style.opacity = ''; }); onScroll(); }); frame(); }
+  if (!reduce) { addEventListener('scroll', onScroll, { passive: true }); addEventListener('resize', () => { measure(); onScroll(); }); addEventListener('load', measure, { once: true }); frame(); }
   else words.forEach(w => w.classList.add('on'));
 
   // видео кейсов: играют, только пока видны; при «меньше движения» остаётся картинка

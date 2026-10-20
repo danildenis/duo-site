@@ -35,7 +35,7 @@ img{display:block;max-width:100%}
 .notch .side.l{left:-22px;right:calc(50% - 1px)}
 .notch .side.r{left:calc(50% - 1px);right:-22px}
 .notch .wing{position:absolute;top:0;height:100%;width:calc(var(--w) / 2 + 1px);background:var(--black);
-  transition:transform .6s var(--ease) .12s;will-change:transform;backface-visibility:hidden}
+  transition:transform .62s cubic-bezier(.65,0,.3,1) .14s;will-change:transform;backface-visibility:hidden}
 .notch .l .wing{right:0;border-radius:0 0 0 24px;transform:translate3d(var(--sh),0,0)}
 .notch .r .wing{left:0;border-radius:0 0 24px 0;transform:translate3d(calc(-1 * var(--sh)),0,0)}
 .notch .ear{position:absolute;top:var(--fw);width:22px;height:22px}
@@ -44,18 +44,18 @@ img{display:block;max-width:100%}
 .notch .hit{position:absolute;top:0;bottom:-12px;left:calc(50% - var(--c) / 2 - 12px);right:calc(50% - var(--c) / 2 - 12px);pointer-events:auto}
 .notch .home{position:relative;z-index:2;display:block;width:44px;height:23px;flex:none;margin-inline:auto;background:url(../img/logo-white.svg) center/contain no-repeat;opacity:.92;pointer-events:auto;transition:transform .5s var(--ease)}
 .notch nav{position:absolute;top:var(--fw);bottom:0;display:flex;align-items:center;gap:clamp(18px,2.4vw,34px);font-size:14px;color:var(--t2);white-space:nowrap;
-  opacity:0;pointer-events:none;transition:opacity .2s ease,transform .45s var(--ease);will-change:opacity,transform}
+  opacity:0;pointer-events:none;transition:opacity .22s ease,transform .4s cubic-bezier(.4,0,.6,1);will-change:opacity,transform}
 .notch nav.l{right:calc(50% + 22px + clamp(18px,2.4vw,34px));transform:translate3d(20px,0,0)}
 .notch nav.r{left:calc(50% + 22px + clamp(18px,2.4vw,34px));transform:translate3d(-20px,0,0)}
 .notch nav a{padding:8px 0;transition:color .25s}
 .notch nav a:hover{color:var(--t)}
-.notch.open .wing{transform:none;transition-delay:0s}
+.notch.open .wing{transform:none;transition:transform .74s cubic-bezier(.25,.6,.15,1) 0s}
 .notch.open .hit{left:0;right:0}
-.notch.open nav{opacity:1;transform:none;pointer-events:auto;transition:opacity .35s ease .14s,transform .55s var(--ease) .08s}
+.notch.open nav{opacity:1;transform:none;pointer-events:auto;transition:opacity .45s ease .34s,transform .7s cubic-bezier(.2,.8,.2,1) .26s}
 @media (hover:hover) and (min-width:601px){
-  .notch:hover .wing,.notch:focus-within .wing{transform:none;transition-delay:0s}
+  .notch:hover .wing,.notch:focus-within .wing{transform:none;transition:transform .74s cubic-bezier(.25,.6,.15,1) 0s}
   .notch:hover .hit,.notch:focus-within .hit{left:0;right:0}
-  .notch:hover nav,.notch:focus-within nav{opacity:1;transform:none;pointer-events:auto;transition:opacity .35s ease .14s,transform .55s var(--ease) .08s}
+  .notch:hover nav,.notch:focus-within nav{opacity:1;transform:none;pointer-events:auto;transition:opacity .45s ease .34s,transform .7s cubic-bezier(.2,.8,.2,1) .26s}
 }
 .notch .burger{display:none}
 /* сенсорные экраны и телефон: меню по нажатию, рядом со знаком значок из двух линий */
@@ -87,13 +87,11 @@ img{display:block;max-width:100%}
 .hero-in{position:relative;display:flex;flex-direction:column;align-items:center;gap:clamp(18px,2.4vw,34px);padding-inline:var(--gut);margin:0}
 .logo{position:relative;display:block;width:min(54vw,760px);aspect-ratio:2743/1403;opacity:.86;mix-blend-mode:screen}
 .logo .mark{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}
-.mark .rise,.mark .dot,.mark .base{transform-box:fill-box}
+.mark .rise,.mark .dot{transform-box:fill-box}
 .mark .dot{transform-origin:50% 100%}
-.mark .base{transform-origin:50% 50%}
 /* знак: до старта буквы под строкой, точек нет (без JS виден целиком) */
-.js .hero.wait .mark .rise{transform:translateY(1250px)}
+.js .hero.wait .mark .rise{transform:translateY(1250px);opacity:0}
 .js .hero.wait .mark .dot{opacity:0}
-.js .hero.wait .mark .base{transform:scaleX(0)}
 .hero.wait *,.hero.wait *::before,.hero.wait *::after,body.wait .notch{animation-play-state:paused!important}
 .tag{display:flex;gap:.6em;font-size:clamp(13px,1.35vw,19px);letter-spacing:.32em;text-transform:uppercase;color:var(--t2)}
 .tag span{opacity:0;translate:0 14px;filter:blur(6px);animation:word 1s var(--ease) forwards}
@@ -315,8 +313,8 @@ textarea.inp{min-height:96px;resize:vertical;line-height:1.5}
   .site-only .chip span{width:100%;height:100%;flex-direction:column;align-items:flex-start;justify-content:center;gap:2px;line-height:1.3}
 }
 .menu-m{position:absolute;left:0;right:0;top:calc(100% - 26px);display:grid;padding:30px 18px 18px;background:var(--black);border-radius:0 0 24px 24px;font-size:17px;
-  opacity:0;visibility:hidden;transform:translate3d(0,-8px,0);pointer-events:none;transition:opacity .25s ease,transform .45s var(--ease),visibility 0s linear .45s}
-.notch.open .menu-m{opacity:1;visibility:visible;transform:none;pointer-events:auto;transition:opacity .25s ease .12s,transform .45s var(--ease) .12s,visibility 0s}
+  opacity:0;visibility:hidden;transform:translate3d(0,-10px,0);pointer-events:none;transition:opacity .25s ease,transform .45s cubic-bezier(.4,0,.6,1),visibility 0s linear .45s}
+.notch.open .menu-m{opacity:1;visibility:visible;transform:none;pointer-events:auto;transition:opacity .45s ease .2s,transform .7s cubic-bezier(.2,.8,.2,1) .16s,visibility 0s}
 .menu-m a{padding:13px 4px;border-top:1px solid var(--line-d);color:var(--t2)}
 .menu-m a:first-child{border-top:0}
 .menu-m .btn{margin-top:12px;justify-content:center;border-top:0;color:var(--ink)}

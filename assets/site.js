@@ -2,6 +2,11 @@
 (() => {
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+  // плавная прокрутка колёсиком и тачпадом, как на greymac.com (Lenis, lerp .1). На телефоне — родная прокрутка
+  if (!reduce && window.Lenis && matchMedia('(hover:hover) and (pointer:fine)').matches) {
+    window.lenis = new Lenis({ lerp: .1, anchors: true, autoRaf: true });
+  }
+
   // знак duo на главной: из-под строки поднимаются du и o, потом сверху падают и отскакивают точки
   const hero = document.querySelector('.hero'), mark = hero && hero.querySelector('.mark');
   if (hero && mark) {
@@ -54,10 +59,37 @@
   const measure = () => { if (cases[0]) { caseTop = parseFloat(getComputedStyle(cases[0]).top); caseH = cases[0].offsetHeight; } };
   measure();
 
+  // вопросы на главной: таблетки проявляются из размытия по одной, в перемешанном порядке, пока блок закреплён
+  const faq = document.querySelector('.faq');
+  let pills = [], faqOut = null, faqWin = [];
+  if (faq) {
+    pills = [...faq.querySelectorAll('.pill')]; faqOut = faq.querySelector('.faq-a');
+    const src = [...faq.querySelectorAll('.faq-src > div')], hint = faqOut.innerHTML;
+    pills.forEach(b => b.dataset.i && b.addEventListener('click', () => {
+      const on = b.getAttribute('aria-expanded') !== 'true';
+      pills.forEach(o => o.dataset.i && o.setAttribute('aria-expanded', 'false'));
+      if (on) b.setAttribute('aria-expanded', 'true');
+      faqOut.innerHTML = on ? `<div class="ans">${src[b.dataset.i].innerHTML}</div>` : hint;
+    }));
+    if (!reduce) {
+      faq.classList.add('scrub');
+      // порядок появления: перемешан, но одинаковый при каждом заходе; «свой вопрос» — последним
+      const n = pills.length - 1, order = [...Array(n).keys()].sort((a, b) => ((a * 7 + 3) % n) - ((b * 7 + 3) % n));
+      faqWin = pills.map((_, i) => (i < n ? order.indexOf(i) : n) / n * .5);
+      faqOut.style.opacity = 0;
+      // пришли по ссылке «Вопросы» с другой страницы: браузер встал в начало блока ещё до закрепления — встаём туда, где все таблетки видны
+      if (location.hash === '#faq') requestAnimationFrame(() => {
+        const a = document.getElementById('faq');
+        window.lenis ? lenis.scrollTo(a, { immediate: true, force: true }) : scrollTo(0, a.getBoundingClientRect().top + scrollY);
+      });
+    }
+  }
+
   // что сейчас на экране: считаем только видимое
   const live = new Set();
-  const liveIO = new IntersectionObserver(es => es.forEach(e => e.isIntersecting ? live.add(e.target) : live.delete(e.target)), { rootMargin: '20% 0px' });
-  [rv, work, photo && photo.parentElement].forEach(el => el && liveIO.observe(el));
+  const liveIO = new IntersectionObserver(es => { es.forEach(e => e.isIntersecting ? live.add(e.target) : live.delete(e.target)); if (!reduce) onScroll(); }, { rootMargin: '20% 0px' });
+  [rv, work, photo && photo.parentElement, faq].forEach(el => el && liveIO.observe(el));
+  let lastP = -1;
 
   let ticking = false, lastK = -1, heroHidden = false;
   function frame() {
@@ -73,6 +105,17 @@
       for (let i = 0; i < cases.length - 1; i++) {
         const q = Math.min(1, Math.max(0, 1 - (tops[i + 1] - caseTop) / caseH));
         cases[i].style.transform = `scale(${(1 - q * .06).toFixed(4)})`; cases[i].lastElementChild.style.opacity = (q * .55).toFixed(3);
+      }
+    }
+    if (faqWin.length && live.has(faq)) {
+      const r = faq.getBoundingClientRect(), p = Math.min(1, Math.max(0, -r.top / (r.height - H)));
+      if (Math.abs(p - lastP) > .002) {
+        lastP = p;
+        pills.forEach((el, i) => {
+          const o = Math.min(1, Math.max(0, (p - faqWin[i]) / .13));
+          el.style.opacity = o.toFixed(3); el.style.filter = o >= 1 ? 'none' : `blur(${((1 - o) * 10).toFixed(2)}px)`;
+        });
+        faqOut.style.opacity = Math.min(1, Math.max(0, (p - .56) / .08)).toFixed(3);
       }
     }
     if (photo && live.has(photo.parentElement)) { const b = photo.parentElement.getBoundingClientRect(); photo.style.transform = `translate3d(0,${((b.top + b.height / 2 - H / 2) / H) * -40}px,0)`; }

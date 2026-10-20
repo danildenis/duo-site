@@ -13,6 +13,11 @@
 }
 *{box-sizing:border-box}
 html{color-scheme:dark;scroll-behavior:smooth}
+/* плавная прокрутка Lenis: своя анимация вместо scroll-behavior браузера */
+html.lenis,html.lenis body{height:auto}
+html.lenis{scroll-behavior:auto}
+.lenis [data-lenis-prevent]{overscroll-behavior:contain}
+html.lenis-scrolling iframe{pointer-events:none}
 body{margin:0;background:var(--black);color:var(--t);font-family:var(--f);-webkit-font-smoothing:antialiased;overflow-x:hidden}
 a{color:inherit;text-decoration:none}
 img{display:block;max-width:100%}
@@ -35,7 +40,7 @@ img{display:block;max-width:100%}
 .notch .side.l{left:-22px;right:calc(50% - 1px)}
 .notch .side.r{left:calc(50% - 1px);right:-22px}
 .notch .wing{position:absolute;top:0;height:100%;width:calc(var(--w) / 2 + 1px);background:var(--black);
-  transition:transform .62s cubic-bezier(.65,0,.3,1) .14s;will-change:transform;backface-visibility:hidden}
+  transition:transform .36s cubic-bezier(.4,0,.2,1) .04s;will-change:transform;backface-visibility:hidden}
 .notch .l .wing{right:0;border-radius:0 0 0 24px;transform:translate3d(var(--sh),0,0)}
 .notch .r .wing{left:0;border-radius:0 0 24px 0;transform:translate3d(calc(-1 * var(--sh)),0,0)}
 .notch .ear{position:absolute;top:var(--fw);width:22px;height:22px}
@@ -44,18 +49,19 @@ img{display:block;max-width:100%}
 .notch .hit{position:absolute;top:0;bottom:-12px;left:calc(50% - var(--c) / 2 - 12px);right:calc(50% - var(--c) / 2 - 12px);pointer-events:auto}
 .notch .home{position:relative;z-index:2;display:block;width:44px;height:23px;flex:none;margin-inline:auto;background:url(../img/logo-white.svg) center/contain no-repeat;opacity:.92;pointer-events:auto;transition:transform .5s var(--ease)}
 .notch nav{position:absolute;top:var(--fw);bottom:0;display:flex;align-items:center;gap:clamp(18px,2.4vw,34px);font-size:14px;color:var(--t2);white-space:nowrap;
-  opacity:0;pointer-events:none;transition:opacity .22s ease,transform .4s cubic-bezier(.4,0,.6,1);will-change:opacity,transform}
-.notch nav.l{right:calc(50% + 22px + clamp(18px,2.4vw,34px));transform:translate3d(20px,0,0)}
-.notch nav.r{left:calc(50% + 22px + clamp(18px,2.4vw,34px));transform:translate3d(-20px,0,0)}
+  pointer-events:none;transition:clip-path .36s cubic-bezier(.4,0,.2,1) .04s}
+/* пункты не проявляются прозрачностью: их открывает край плашки, как шторка */
+.notch nav.l{right:calc(50% + 22px + clamp(18px,2.4vw,34px));clip-path:inset(-12px 0 -12px 100%)}
+.notch nav.r{left:calc(50% + 22px + clamp(18px,2.4vw,34px));clip-path:inset(-12px 100% -12px 0)}
 .notch nav a{padding:8px 0;transition:color .25s}
 .notch nav a:hover{color:var(--t)}
-.notch.open .wing{transform:none;transition:transform .74s cubic-bezier(.25,.6,.15,1) 0s}
+.notch.open .wing{transform:none;transition:transform .6s cubic-bezier(.16,1,.3,1) 0s}
 .notch.open .hit{left:0;right:0}
-.notch.open nav{opacity:1;transform:none;pointer-events:auto;transition:opacity .45s ease .34s,transform .7s cubic-bezier(.2,.8,.2,1) .26s}
+.notch.open nav{clip-path:inset(-12px 0);pointer-events:auto;transition:clip-path .6s cubic-bezier(.16,1,.3,1) 0s}
 @media (hover:hover) and (min-width:601px){
-  .notch:hover .wing,.notch:focus-within .wing{transform:none;transition:transform .74s cubic-bezier(.25,.6,.15,1) 0s}
+  .notch:hover .wing,.notch:focus-within .wing{transform:none;transition:transform .6s cubic-bezier(.16,1,.3,1) 0s}
   .notch:hover .hit,.notch:focus-within .hit{left:0;right:0}
-  .notch:hover nav,.notch:focus-within nav{opacity:1;transform:none;pointer-events:auto;transition:opacity .45s ease .34s,transform .7s cubic-bezier(.2,.8,.2,1) .26s}
+  .notch:hover nav,.notch:focus-within nav{clip-path:inset(-12px 0);pointer-events:auto;transition:clip-path .6s cubic-bezier(.16,1,.3,1) 0s}
 }
 .notch .burger{display:none}
 /* сенсорные экраны и телефон: меню по нажатию, рядом со знаком значок из двух линий */
@@ -319,8 +325,8 @@ textarea.inp{min-height:96px;resize:vertical;line-height:1.5}
   .site-only .chip span{width:100%;height:100%;flex-direction:column;align-items:flex-start;justify-content:center;gap:2px;line-height:1.3}
 }
 .menu-m{position:absolute;left:0;right:0;top:calc(100% - 26px);display:grid;padding:30px 18px 18px;background:var(--black);border-radius:0 0 24px 24px;font-size:17px;
-  opacity:0;visibility:hidden;transform:translate3d(0,-10px,0);pointer-events:none;transition:opacity .25s ease,transform .45s cubic-bezier(.4,0,.6,1),visibility 0s linear .45s}
-.notch.open .menu-m{opacity:1;visibility:visible;transform:none;pointer-events:auto;transition:opacity .45s ease .2s,transform .7s cubic-bezier(.2,.8,.2,1) .16s,visibility 0s}
+  opacity:0;visibility:hidden;transform:translate3d(0,-10px,0);pointer-events:none;transition:opacity .22s ease,transform .36s cubic-bezier(.4,0,.2,1),visibility 0s linear .36s}
+.notch.open .menu-m{opacity:1;visibility:visible;transform:none;pointer-events:auto;transition:opacity .4s ease .12s,transform .6s cubic-bezier(.16,1,.3,1) .08s,visibility 0s}
 .menu-m a{padding:13px 4px;border-top:1px solid var(--line-d);color:var(--t2)}
 .menu-m a:first-child{border-top:0}
 .menu-m .btn{margin-top:12px;justify-content:center;border-top:0;color:var(--ink)}
@@ -611,3 +617,30 @@ textarea.inp{min-height:96px;resize:vertical;line-height:1.5}
 .tg-app iframe{flex:1;width:100%;border:0;display:block;background:#F6F1EC}
 .tg-home.dark{background:rgba(42,35,33,.55)}
 .tg-hint{font-size:14px;color:var(--ink2);text-align:center}
+
+/* ── вопросы на главной: облако «таблеток» ── */
+.faq{position:relative;z-index:2;background:var(--bg);border-radius:var(--r);padding-block:clamp(90px,10vw,140px)}
+.faq-anchor{position:absolute;left:0;top:0}
+.faq .label{display:block;margin:0 0 clamp(20px,2.6vw,36px);text-align:center;color:var(--t3);font-size:13px;line-height:1.4}
+.pills{display:flex;flex-wrap:wrap;justify-content:center;gap:clamp(6px,.7vw,12px);max-width:1240px;margin-inline:auto}
+.pill{font:inherit;font-weight:300;font-size:clamp(17px,min(2.6vw,4.4svh),42px);line-height:1.12;letter-spacing:-.025em;color:var(--t);
+  background:none;border:1px solid rgba(242,243,245,.62);border-radius:999px;padding:.2em .62em .24em;cursor:pointer;text-align:center;
+  transition:background .35s var(--ease),color .35s,border-color .35s;-webkit-tap-highlight-color:transparent}
+.pill:hover{border-color:var(--t)}
+.pill[aria-expanded=true]{background:var(--t);color:var(--ink);border-color:var(--t)}
+.pill.ask{display:inline-flex;align-items:center;gap:.4em;color:var(--t2);background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.14)}
+.pill.ask:hover{color:var(--t);border-color:rgba(255,255,255,.3)}
+.pill.ask .tgi{width:.8em;height:.8em;flex:none}
+.faq-a{max-width:760px;min-height:7.5em;margin:clamp(22px,3vw,40px) auto 0;text-align:center;font-size:16px;line-height:1.6;color:var(--t2)}
+.faq-a p{margin:0 0 8px}
+.faq-a a{color:var(--t);text-decoration:underline;text-underline-offset:3px}
+.faq-a .hint{font-size:14px;color:var(--t3)}
+.faq-a .ans{animation:ansin .6s var(--ease)}
+@keyframes ansin{from{opacity:0;filter:blur(8px);translate:0 10px}}
+/* с прокруткой: блок закреплён, таблетки проявляются по одной (скрипт), #faq — там, где все уже видны */
+.faq.scrub{height:270svh;padding-block:0}
+.faq.scrub .faq-pin{position:sticky;top:0;height:100svh;display:flex;flex-direction:column;justify-content:center;padding-top:calc(var(--fw) + 52px);overflow:hidden}
+.faq.scrub .faq-anchor{top:calc((100% - 100svh) * .66)}
+.faq.scrub .pill{opacity:0;filter:blur(10px)}
+.faq.scrub .pill:focus-visible{opacity:1!important;filter:none!important}
+@media (max-width:600px){.faq.scrub{height:230svh}.pills{gap:6px}.pill{font-size:clamp(16px,4.6vw,20px)}.faq-a{font-size:15px;min-height:9em}}

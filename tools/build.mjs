@@ -88,9 +88,22 @@ const FAQ = [
   ['Почему не конструктор?', () => `<p>За готовый сайт платите один раз, без ежемесячной подписки за конструктор. И сайт выглядит как ваш бренд, а не как шаблон из каталога.</p>`],
   ['Как начать?', R => `<p>Оставьте <a href="${R}zayavka/">заявку</a> на сайте или откройте <a href="${TG_APP}" target="_blank" rel="noopener">приложение DUO в Telegram</a>. Ответим сами, без менеджеров, и подскажем, с чего начать.</p>`],
 ];
-const faq = (R, list = FAQ) => `<div class="qa up">
-      ${list.map(([q, a]) => `<details name="qa"><summary>${q}<i aria-hidden="true"></i></summary><div class="a">${a(R)}</div></details>`).join('\n      ')}
-    </div>`;
+// Вопросы на главной: облако «таблеток». Блок закреплён на экране, таблетки проявляются из размытия по одной,
+// пока его прокручиваешь (как на 13322566869.com). Нажали — ответ под облаком. #faq стоит там, где все уже видны.
+const faq = R => `<section class="faq dark" aria-labelledby="faqT">
+  <i class="faq-anchor" id="faq" aria-hidden="true"></i>
+  <div class="faq-pin">
+    <div class="wrap">
+      <h2 class="label" id="faqT">Частые вопросы</h2>
+      <div class="pills">
+        ${FAQ.map(([q], i) => `<button class="pill" type="button" data-i="${i}" aria-expanded="false" aria-controls="faqA">${q}</button>`).join('\n        ')}
+        <a class="pill ask" href="${TG_APP}" target="_blank" rel="noopener">${TG} Свой вопрос — в Telegram</a>
+      </div>
+      <div class="faq-a" id="faqA" aria-live="polite"><p class="hint">Нажмите на вопрос — ответ появится здесь</p></div>
+    </div>
+  </div>
+  <div class="faq-src" hidden>${FAQ.map(([, a]) => `<div>${a(R)}</div>`).join('')}</div>
+</section>`;
 
 // ── демо-сайты: бренды и данные вымышлены (копии из репозитория duo-portfolio) ──
 const DEMOS = [
@@ -104,8 +117,10 @@ const demos = R => `<div class="demos">
 
 // ── общие куски ──
 const NAV_L = [['raboty/', 'Работы'], ['uslugi/', 'Услуги'], ['ceny/', 'Цены']];
-const NAV_R = [['process/', 'Процесс'], ['voprosy/', 'Вопросы'], ['o-nas/', 'О нас']];
-const nav = (R, cur, list) => list.map(([h, t]) => `<a href="${R}${h}"${h === cur ? ' aria-current="page"' : ''}>${t}</a>`).join('');
+const NAV_R = [['process/', 'Процесс'], ['#faq', 'Вопросы'], ['o-nas/', 'О нас']];
+// ссылка на якорь главной: на самой главной — просто #…, чтобы прокрутка шла плавно, без перехода
+const href = (R, h) => (h[0] === '#' && R === './' ? h : R + h);
+const nav = (R, cur, list) => list.map(([h, t]) => `<a href="${href(R, h)}"${h === cur ? ' aria-current="page"' : ''}>${t}</a>`).join('');
 
 const header = (R, cur) => `<header class="notch" id="notch">
   <span class="side l" aria-hidden="true"><span class="wing"><i class="ear"></i></span></span>
@@ -125,7 +140,7 @@ const footer = R => `<footer class="foot dark" id="contacts">
       <p>Делаем сайты и Telegram-ботов для бизнеса. Напишите нам в Telegram или посчитайте стоимость в боте — ответим и подскажем, с чего начать.</p>
       <p class="legal"><a href="${R}privacy/">Политика обработки персональных данных</a></p>
     </div>
-    <div><h4>Разделы</h4><ul>${[['raboty/', 'Работы'], ['uslugi/', 'Услуги'], ['ceny/', 'Цены'], ['process/', 'Процесс'], ['voprosy/', 'Вопросы'], ['razbor/', 'Разбор сайта'], ['o-nas/', 'О нас'], ['zayavka/', 'Заявка']].map(([h, t]) => `<li><a href="${R}${h}">${t}</a></li>`).join('')}</ul></div>
+    <div><h4>Разделы</h4><ul>${[['raboty/', 'Работы'], ['uslugi/', 'Услуги'], ['ceny/', 'Цены'], ['process/', 'Процесс'], ['#faq', 'Вопросы'], ['razbor/', 'Разбор сайта'], ['o-nas/', 'О нас'], ['zayavka/', 'Заявка']].map(([h, t]) => `<li><a href="${href(R, h)}">${t}</a></li>`).join('')}</ul></div>
     <div><h4>Связь</h4><ul><li><a href="${TG_APP}" target="_blank" rel="noopener">Приложение в Telegram</a></li><li><a href="https://t.me/duodevops_bot" target="_blank" rel="noopener">Бот @duodevops_bot</a></li><li><a href="https://t.me/duodevops" target="_blank" rel="noopener">Telegram-канал</a></li><li><a href="https://instagram.com/duo_devops" target="_blank" rel="noopener">Instagram</a></li></ul></div>
   </div>
   <div class="endbar"><span>Websites · Products · Automation</span><b>duo</b><span>© 2026 · Два человека. Один результат.</span></div>
@@ -158,6 +173,7 @@ const layout = ({ R, path, title, desc, body, home }) => `<!doctype html>
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600&display=swap">
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="${R}assets/site.css?v=${VER}">
+<script src="${R}assets/lenis.min.js?v=1.3.26" defer></script>
 <script src="${R}assets/site.js?v=${VER}" defer></script>
 </head>
 <body class="${home ? 'wait' : 'inner'}">${home ? '\n<script>document.documentElement.classList.add("js")</script>' : ''}
@@ -292,9 +308,13 @@ page('', {
   <section class="wrap sec" id="prices">
     ${head('Цены', 'Цена известна <em>до начала работы</em>', 'Платите один раз за готовый сайт, без подписки за конструктор.', more(`${R}ceny/`, 'Все цены на сайты и ботов'))}
     ${siteBase}
-    <p class="note up">Как проходит работа — <a href="${R}process/" style="text-decoration:underline;text-underline-offset:3px">пять шагов от заявки до запуска</a>. Частые вопросы — <a href="${R}voprosy/" style="text-decoration:underline;text-underline-offset:3px">сроки, домен, правки</a>.</p>
+    <p class="note up">Как проходит работа — <a href="${R}process/" style="text-decoration:underline;text-underline-offset:3px">пять шагов от заявки до запуска</a>.</p>
   </section>
+</div>
 
+${faq(R)}
+
+<div class="sheet">
   <section class="wrap sec" id="about">
     ${team(R, false)}
     ${bar(R, 'Узнайте цену <em>своего проекта</em>')}
@@ -494,7 +514,7 @@ page('process/', {
       ${row('Домен', 'Есть — подключим. Нет — поможем выбрать', null)}
     </div>
     ${bar(R, 'Первый шаг — <em>расчёт стоимости</em>')}
-    ${nextp(R, 'voprosy/', 'Вопросы и ответы')}
+    ${nextp(R, '#faq', 'Частые вопросы')}
   </section>
 </div>`,
 });
@@ -582,20 +602,6 @@ page('razbor/', {
 </div>`,
 });
 
-page('voprosy/', {
-  title: 'Вопросы и ответы — duo',
-  desc: 'Сколько стоит сайт и бот, сколько длится работа, кто платит за домен и можно ли менять сайт самому.',
-  body: R => `${ptop({ label: 'Вопросы', h1: 'Вопросы <em>и ответы</em>', lead: 'Собрали то, что спрашивают чаще всего. Не нашли ответ — напишите нам в Telegram.' })}
-
-<div class="sheet after">
-  <section class="wrap sec">
-    ${faq(R)}
-    ${bar(R, 'Не нашли ответ? <em>Спросите нас</em>', { btn: `${TG} Спросить в Telegram`, href: TG_APP, out: true, alt: `Отвечаем сами, без менеджеров. Или сразу <a href="${R}zayavka/">рассчитайте стоимость</a>` })}
-    ${nextp(R, 'o-nas/', 'О нас')}
-  </section>
-</div>`,
-});
-
 page('privacy/', {
   title: 'Политика обработки персональных данных — duo',
   desc: 'Какие данные собирает сайт студии duo, зачем и как их удалить.',
@@ -649,3 +655,7 @@ for (const p of PAGES) {
   writeFileSync(join(ROOT, file), html);
   console.log('✓', file);
 }
+// старый адрес /voprosy/ — вопросы теперь на главной
+mkdirSync(join(ROOT, 'voprosy'), { recursive: true });
+writeFileSync(join(ROOT, 'voprosy/index.html'), `<!doctype html><html lang="ru"><head><meta charset="utf-8"><title>Вопросы — duo</title><meta name="robots" content="noindex"><meta http-equiv="refresh" content="0; url=../#faq"><link rel="canonical" href="${SITE_URL}#faq"></head><body><a href="../#faq">Вопросы и ответы — на главной</a></body></html>\n`);
+console.log('✓ voprosy/index.html → ../#faq');

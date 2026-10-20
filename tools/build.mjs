@@ -39,10 +39,10 @@ const BOT = {
   ],
 };
 
-// ── работы ──
+// ── работы ── (sb — цвет строки состояния телефона: фон и текст, как верх сайта)
 const CASES = [
   {
-    slug: 'car-export', n: '01', tint: 'rgba(230,60,70,.7)', img: 'carexport',
+    slug: 'car-export', sb: ['#0e0f13', '#fff'], n: '01', tint: 'rgba(230,60,70,.7)', img: 'carexport',
     client: 'Car Export', sphere: 'авто из Кореи и Китая', kind: 'Лендинг',
     title: 'Car <em>Export</em>', name: 'Car Export', url: 'https://carrexport.ru', host: 'carrexport.ru',
     text: 'Лендинг посредника: пять шагов сделки, цифры доверия, отзывы и один главный призыв — написать в Telegram.',
@@ -53,7 +53,7 @@ const CASES = [
     ],
   },
   {
-    slug: 'ksenia', n: '02', tint: 'rgba(220,200,170,.6)', img: 'ksenia',
+    slug: 'ksenia', sb: ['#fff', '#111'], n: '02', tint: 'rgba(220,200,170,.6)', img: 'ksenia',
     client: 'Ксения Субботина', sphere: 'обучение', kind: 'Сайт школы',
     title: 'Школа <em>Permanent</em>', name: 'Школа Permanent', url: 'https://subbotina-perm.ru', host: 'subbotina-perm.ru',
     text: 'Сайт мастер-классов и курсов: выбор зон с пересчётом цены, тарифы и запись в личные сообщения с готовым текстом.',
@@ -64,7 +64,7 @@ const CASES = [
     ],
   },
   {
-    slug: 'vkusny', n: '03', tint: 'rgba(255,150,80,.65)', img: 'vkusny',
+    slug: 'vkusny', sb: ['#f0dac5', '#3b1f1a'], n: '03', tint: 'rgba(255,150,80,.65)', img: 'vkusny',
     client: 'Вкусный компромисс', sphere: 'десерты', kind: 'Многостраничный',
     title: 'Вкусный <em>компромисс</em>', name: 'Вкусный компромисс', url: null,
     text: 'Каталог десертов в виде фруктов: при прокрутке десерт «разрезается» и показывает слои, корзина и заказ в Telegram.',
@@ -409,9 +409,9 @@ CASES.forEach((c, i) => {
       </div>
       <div class="stage">
         <div class="shot"><video src="${R}media/cases/${c.slug}.mp4" poster="${R}img/work/${c.img}.jpg" muted loop playsinline preload="none" data-play aria-label="Прокрутка сайта ${c.name} на компьютере"></video></div>
-        <div class="phone iph"><i class="ib act"></i><i class="ib v1"></i><i class="ib v2"></i><i class="ib pw"></i>
+        <div class="phone iph" style="--sb:${c.sb[0]};--sbt:${c.sb[1]}"><div class="fr"><i class="ib act"></i><i class="ib v1"></i><i class="ib v2"></i><i class="ib pw"></i>
           <div class="scr"><div class="sb"><span>9:41</span><i class="isl"></i><span class="ic">${STATUS_ICONS}</span></div><video src="${R}media/cases/${c.slug}-m.mp4" poster="${R}img/work/${c.img}-m.jpg" muted loop playsinline preload="none" data-play aria-label="Прокрутка сайта ${c.name} на телефоне"></video><i class="hb"></i></div>
-        </div>
+        </div></div>
       </div>
     </div>`,
     })}

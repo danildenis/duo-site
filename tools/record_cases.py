@@ -1,6 +1,6 @@
 """
 Видео кейсов: сайт клиента листает «человек» → media/cases/<slug>.mp4 (компьютер, 1920×1080)
-и <slug>-m.mp4 (телефон, 1080×2340 — экран iPhone в Full HD).
+и <slug>-m.mp4 (телефон, 1080×2208 — экран iPhone под строкой состояния, Full HD).
 
     uv run --with playwright --with imageio-ffmpeg python duo-site/tools/record_cases.py [slug ...]
 
@@ -31,7 +31,8 @@ SITES = {
 # окно (CSS-пиксели), плотность пикселей, итоговый размер видео
 SIZES = {
     "": dict(view=(1920, 1080), dpr=1, out=(1920, 1080)),
-    "-m": dict(view=(390, 844), dpr=3, out=(1080, 2338)),
+    # экран iPhone 390×844 минус строка состояния 47 px — её рисует рамка телефона на сайте
+    "-m": dict(view=(390, 797), dpr=3, out=(1080, 2208)),
 }
 FPS = 60
 

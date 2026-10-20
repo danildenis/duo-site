@@ -2,7 +2,7 @@
 // Шапка, подвал и <head> — здесь, в одном месте; содержимое страниц — ниже, в PAGES.
 // Готовые страницы (index.html, uslugi/index.html …) кладутся в корень репозитория — их раздаёт GitHub Pages.
 // Цены — из прайса проекта DUO: src/products/site/pricing.config.ts и src/products/bot/pricing.config.ts.
-import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync, readdirSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -84,6 +84,11 @@ const CASES = [
   },
 ];
 
+// сайт кейса целиком: снимок, нарезанный на части (tools/shoot_cases.py) — листается внутри рамки
+const CASE_SHOTS = readdirSync(join(ROOT, 'img/cases')).filter(f => f.endsWith('.jpg')).sort((x, y) => x.localeCompare(y, 'en', { numeric: true }));
+const sitePages = (R, slug, suffix, alt) => CASE_SHOTS.filter(f => new RegExp(`^${slug}${suffix}-\\d+\\.jpg$`).test(f))
+  .map((f, i) => `<img src="${R}img/cases/${f}" alt="${i ? '' : alt}" loading="lazy" decoding="async">`).join('');
+
 // ── вопросы и ответы (только то, что есть в прайсе и в процессе) ──
 const FAQ = [
   ['Сколько стоит сайт?', R => `<p>База — ${rub(SITE.base)}: до трёх страниц, адаптив под телефон, настройка домена и хостинга и форма заявки в Telegram. Дальше добавляете только нужное: страницы, дизайн, анимации, тексты, оплату, админку, SEO.</p><p>Все опции с ценами — на странице <a href="${R}ceny/">Цены</a>, итог считается в <a href="${R}zayavka/">заявке</a>.</p>`],
@@ -97,7 +102,7 @@ const FAQ = [
   ['Как начать?', R => `<p>Оставьте <a href="${R}zayavka/">заявку</a> на сайте или откройте <a href="${TG_APP}" target="_blank" rel="noopener">приложение DUO в Telegram</a>. Ответим сами, без менеджеров, и подскажем, с чего начать.</p>`],
 ];
 const faq = (R, list = FAQ) => `<div class="qa up">
-      ${list.map(([q, a]) => `<details><summary>${q}<i aria-hidden="true"></i></summary><div class="a">${a(R)}</div></details>`).join('\n      ')}
+      ${list.map(([q, a]) => `<details name="qa"><summary>${q}<i aria-hidden="true"></i></summary><div class="a">${a(R)}</div></details>`).join('\n      ')}
     </div>`;
 
 // ── демо-сайты: бренды и данные вымышлены (копии из репозитория duo-portfolio) ──
@@ -134,7 +139,6 @@ const footer = R => `<footer class="foot dark" id="contacts">
       <p class="legal"><a href="${R}privacy/">Политика обработки персональных данных</a></p>
     </div>
     <div><h4>Разделы</h4><ul>${[['raboty/', 'Работы'], ['uslugi/', 'Услуги'], ['ceny/', 'Цены'], ['process/', 'Процесс'], ['voprosy/', 'Вопросы'], ['razbor/', 'Разбор сайта'], ['o-nas/', 'О нас'], ['zayavka/', 'Заявка']].map(([h, t]) => `<li><a href="${R}${h}">${t}</a></li>`).join('')}</ul></div>
-    <div><h4>Работы</h4><ul>${CASES.map(c => `<li><a href="${R}raboty/${c.slug}/">${c.client}</a></li>`).join('')}<li><a href="${R}raboty/#demo">Демо-сайты</a></li><li><a href="${R}raboty/#bots">Демо-бот</a></li></ul></div>
     <div><h4>Связь</h4><ul><li><a href="${TG_APP}" target="_blank" rel="noopener">Приложение в Telegram</a></li><li><a href="https://t.me/duodevops_bot" target="_blank" rel="noopener">Бот @duodevops_bot</a></li><li><a href="https://t.me/duodevops" target="_blank" rel="noopener">Telegram-канал</a></li><li><a href="https://instagram.com/duo_devops" target="_blank" rel="noopener">Instagram</a></li></ul></div>
   </div>
   <div class="endbar"><span>Websites · Products · Automation</span><b>duo</b><span>© 2026 · Два человека. Один результат.</span></div>
@@ -212,7 +216,7 @@ ${CASES.map(c => `    <article class="case" style="--tint:${c.tint}">
         <p>${c.text}</p>
         <div style="display:flex;flex-wrap:wrap;gap:10px"><a class="btn white open" href="${R}raboty/${c.slug}/">Смотреть кейс ${ARROW}</a>${c.url ? ext(c.url, 'Открыть сайт', 'btn glass open') : ''}</div>
       </div>
-      <div class="shot"><picture><source media="(max-width:860px)" srcset="${R}img/work/${c.img}-m.jpg"><img src="${R}img/work/${c.img}.jpg" alt="Первый экран сайта ${c.name}" loading="lazy"></picture></div>
+      <div class="shot"><img src="${R}img/work/${c.img}.jpg" alt="Первый экран сайта ${c.name}" loading="lazy"></div>
     </article>`).join('\n')}
   </div>`;
 
@@ -223,7 +227,7 @@ const STEPS = [
   ['04', 'Сборка', 'Вёрстка, анимации, адаптив и форма заявки в Telegram', 'проверяем на телефоне'],
   ['05', 'Запуск', 'Подключаем домен и хостинг, передаём сайт и остаёмся на связи', 'поддержка по желанию'],
 ];
-const stepRows = () => STEPS.map(([n, t, d, p]) => row(`<span class="num">${n}</span>${t}`, d, p)).join('\n      ');
+const stepRows = () => STEPS.map(([n, t, d, p]) => row(t, d, p)).join('\n      ');
 
 const team = (R, withHead = true) => `<div class="team">
       <div class="photo up"><img src="${R}img/team/duo.jpg" alt="Данил и Денис, основатели duo" loading="lazy"></div>
@@ -282,9 +286,9 @@ page('', {
   <section class="wrap sec" id="services">
     ${head('Услуги', 'Что мы делаем <em>для вашего бизнеса</em>', 'Базу и каждую опцию видно заранее, без скрытых платежей.')}
     <div class="tiles">
-      <a class="tile up" href="${R}uslugi/#sites"><span class="label">01</span><h3>Сайты под ключ</h3><p>Дизайн под ваш бренд, адаптив под телефон, домен, хостинг и заявки в Telegram</p><span class="p">от ${rub(SITE.base)} ${ARROW}</span></a>
-      <a class="tile up" href="${R}uslugi/#bots"><span class="label">02</span><h3>Telegram-боты</h3><p>Заявки, запись, каталог, оплата и рассылки — собираем из нужных функций</p><span class="p">от ${rub(BOT.base)} ${ARROW}</span></a>
-      <a class="tile up" href="${R}uslugi/#support"><span class="label">03</span><h3>Поддержка</h3><p>Правки, обновления и помощь после запуска — для сайтов и ботов</p><span class="p">${rub(SITE.support)} в месяц ${ARROW}</span></a>
+      <a class="tile up" href="${R}uslugi/#sites"><h3>Сайты под ключ</h3><p>Дизайн под ваш бренд, адаптив под телефон, домен, хостинг и заявки в Telegram</p><span class="p">от ${rub(SITE.base)} ${ARROW}</span></a>
+      <a class="tile up" href="${R}uslugi/#bots"><h3>Telegram-боты</h3><p>Заявки, запись, каталог, оплата и рассылки — собираем из нужных функций</p><span class="p">от ${rub(BOT.base)} ${ARROW}</span></a>
+      <a class="tile up" href="${R}uslugi/#support"><h3>Поддержка</h3><p>Правки, обновления и помощь после запуска — для сайтов и ботов</p><span class="p">${rub(SITE.support)} в месяц ${ARROW}</span></a>
     </div>
     <a class="teaser up" href="${R}razbor/"><div><b>Уже есть сайт? Бесплатно разберём его</b><span>Пришлите ссылку — ответим тремя конкретными улучшениями</span></div><span class="btn white">Получить разбор ${ARROW}</span></a>
     ${bar(R, 'Хотите узнать точную цену?', 'Посчитать стоимость')}
@@ -385,7 +389,7 @@ page('raboty/', {
         <div class="tg">
           <i class="tg-btn tg-act"></i><i class="tg-btn tg-vol1"></i><i class="tg-btn tg-vol2"></i><i class="tg-btn tg-pwr"></i>
           <div class="tg-in tg-app">
-            <div class="tg-status light"><span>9:41</span><i class="tg-island"></i><span class="tg-ic">●●● ◔</span></div>
+            <div class="tg-status light"><span class="tg-time">9:41</span><i class="tg-island"></i><span class="tg-ic"><svg viewBox="0 0 18 12" aria-hidden="true"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5.5" width="3" height="6.5" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg><svg viewBox="0 0 16 12" aria-hidden="true"><path d="M8 2.6c2.3 0 4.4.9 6 2.4l1.1-1.2A10.3 10.3 0 0 0 8 1 10.3 10.3 0 0 0 .9 3.8L2 5c1.6-1.5 3.7-2.4 6-2.4Zm0 3.2c1.4 0 2.7.5 3.7 1.4l1.1-1.2A7.1 7.1 0 0 0 8 4.2 7.1 7.1 0 0 0 3.2 6l1.1 1.2c1-.9 2.3-1.4 3.7-1.4Zm0 3.2c.6 0 1.1.2 1.5.6L8 11.2 6.5 9.6c.4-.4.9-.6 1.5-.6Z"/></svg><span class="tg-bat"><i></i></span></span></div>
             <div class="tg-apphead"><span>Закрыть</span><b>Линия · запись</b><span>⋯</span></div>
             <iframe src="${R}demo/linia/" title="Мини-приложение записи «Линия»" loading="lazy"></iframe>
             <i class="tg-home dark"></i>
@@ -418,9 +422,10 @@ CASES.forEach((c, i) => {
         <button type="button" data-v="phone" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M11 18.5h2"/></svg>Телефон</button>
       </div>
       <div class="stage">
-        <div class="shot"><video src="${R}media/cases/${c.slug}.mp4" poster="${R}img/work/${c.img}.jpg" muted loop playsinline preload="none" data-play aria-label="Прокрутка сайта ${c.name} на компьютере"></video></div>
-        <div class="phone"><video src="${R}media/cases/${c.slug}-m.mp4" poster="${R}img/work/${c.img}-m.jpg" muted loop playsinline preload="none" data-play aria-label="Прокрутка сайта ${c.name} на телефоне"></video></div>
+        <div class="shot"><div class="site" tabindex="0" aria-label="Сайт ${c.name} на компьютере — листайте">${sitePages(R, c.slug, '', `Сайт ${c.name} на компьютере`)}</div></div>
+        <div class="phone"><div class="site" tabindex="0" aria-label="Сайт ${c.name} на телефоне — листайте">${sitePages(R, c.slug, '-m', `Сайт ${c.name} на телефоне`)}</div></div>
       </div>
+      <p class="site-hint">Листайте сайт внутри экрана</p>
     </div>`,
     })}
 
@@ -562,9 +567,9 @@ page('razbor/', {
 
     <div class="subhead up"><h3>Как это работает</h3></div>
     <div class="rows">
-      ${row('<span class="num">01</span>Ссылка', 'Присылаете адрес сайта и как с вами связаться', '1 минута')}
-      ${row('<span class="num">02</span>Смотрим', 'Проходим сайт как ваш клиент — с компьютера и с телефона', 'сами')}
-      ${row('<span class="num">03</span>Ответ', 'Пишем три улучшения: что поправить и почему это важно', 'в Telegram или звонком')}
+      ${row('Ссылка', 'Присылаете адрес сайта и как с вами связаться', '1 минута')}
+      ${row('Смотрим', 'Проходим сайт как ваш клиент — с компьютера и с телефона', 'сами')}
+      ${row('Ответ', 'Пишем три улучшения: что поправить и почему это важно', 'в Telegram или звонком')}
     </div>
 
     <div class="audit up" id="audit" style="margin-top:clamp(48px,6vw,80px)">

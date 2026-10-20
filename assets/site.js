@@ -83,19 +83,21 @@
     document.querySelectorAll('video[data-play]').forEach(el => vio.observe(el));
   }
 
-  // кейс: переключатель «Компьютер / Телефон» — видно одно видео, второе на паузе
+  // кейс: переключатель «Компьютер / Телефон» — сайт листается внутри экрана, при переключении — снова сверху
   document.querySelectorAll('.viewer').forEach(vw => {
     const set = v => {
       vw.dataset.view = v;
       vw.querySelectorAll('[data-v]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.v === v)));
-      vw.querySelectorAll('video').forEach(el => {
-        const on = el.closest(v === 'phone' ? '.phone' : '.shot');
-        if (on && !reduce) { el.currentTime = 0; el.play().catch(() => {}); } else el.pause();
-      });
+      vw.querySelectorAll('.site').forEach(el => { el.scrollTop = 0; });
     };
     vw.querySelectorAll('[data-v]').forEach(b => b.addEventListener('click', () => set(b.dataset.v)));
     if (matchMedia('(max-width:600px)').matches) set('phone');
   });
+
+  // вопросы: открыт только один (для браузеров без <details name>)
+  document.querySelectorAll('details[name]').forEach(d => d.addEventListener('toggle', () => {
+    if (d.open) document.querySelectorAll(`details[name="${d.getAttribute('name')}"]`).forEach(o => { if (o !== d) o.open = false; });
+  }));
 
   // заголовки и плашки появляются снизу
   const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { rootMargin: '0px 0px -12% 0px' });

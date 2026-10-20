@@ -190,7 +190,7 @@ h2 em{display:block;font-style:normal;color:var(--ink3)}
 
 /* подвал */
 .foot{position:relative;z-index:2;background:var(--bg);border-radius:var(--r) var(--r) 0 0;padding:clamp(56px,7vw,96px) 0 calc(var(--fw) + 18px)}
-.foot-grid{display:grid;grid-template-columns:minmax(0,1.4fr) repeat(3,minmax(0,.6fr));gap:32px}
+.foot-grid{display:grid;grid-template-columns:minmax(0,1.4fr) repeat(2,minmax(0,.6fr));gap:32px}
 .foot .mk{width:64px;height:33px;background:url(../img/logo-white.svg) center/contain no-repeat;margin-bottom:22px}
 .foot p{margin:0;font-size:15px;line-height:1.6;color:var(--t2);max-width:420px}
 .foot h4{margin:0 0 16px;font-size:12px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--t3)}
@@ -215,7 +215,10 @@ h2 em{display:block;font-style:normal;color:var(--ink3)}
   .foot-grid>div:first-child{grid-column:1/-1}
   .bar{flex-direction:column;align-items:flex-start;padding:22px}
   .case{position:relative;top:auto;height:auto;min-height:0;grid-template-columns:1fr;align-items:start;will-change:auto}
-  .shot{aspect-ratio:9/12;max-height:none}
+  .shot{max-height:none}
+  .case .shot::before{height:20px}.case .shot::after{top:7px;left:10px;width:6px;height:6px;box-shadow:10px 0 0 rgba(255,255,255,.22),20px 0 0 rgba(255,255,255,.22)}
+  .case .shot img{top:20px;height:calc(100% - 20px)}
+  .case{gap:22px}
   .row{grid-template-columns:1fr}
   .case h3{font-size:clamp(34px,9vw,52px)}
 }
@@ -484,6 +487,13 @@ textarea.inp{min-height:96px;resize:vertical;line-height:1.5}
 .teaser span{font-size:14px;color:var(--t2)}
 @media (max-width:860px){.audit{grid-template-columns:1fr}.teaser{flex-direction:column;align-items:flex-start}}
 
+/* кейс: сайт целиком, листается внутри рамки */
+.site{position:absolute;inset:30px 0 0;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.25) transparent;background:#fff;outline:none}
+.site img{display:block;width:100%;height:auto}
+.phone .site{inset:0;scrollbar-width:none}
+.phone .site::-webkit-scrollbar{display:none}
+.site-hint{margin:16px 0 0;text-align:center;font-size:13px;color:var(--t3)}
+
 /* видео кейсов */
 .shot video{position:absolute;left:0;top:30px;width:100%;height:calc(100% - 30px);object-fit:cover;object-position:top;background:#000}
 .cshots .shot{aspect-ratio:1440/930}
@@ -547,8 +557,10 @@ textarea.inp{min-height:96px;resize:vertical;line-height:1.5}
 .tg-in{position:relative;height:100%;border-radius:49px;overflow:hidden;display:flex;flex-direction:column;
   background:#0E1621 radial-gradient(rgba(255,255,255,.035) 1.2px,transparent 1.4px) 0 0/22px 22px;
   box-shadow:0 0 0 3px #000;font-family:-apple-system,"SF Pro Text","Segoe UI",Roboto,Manrope,sans-serif}
-.tg-status{position:relative;flex:none;height:50px;display:flex;align-items:center;justify-content:space-between;padding:4px 30px 0 36px;color:#fff;font-size:15px;font-weight:600;background:#17212B}
-.tg-island{position:absolute;left:50%;top:11px;width:104px;height:30px;margin-left:-52px;border-radius:20px;background:#000}
+.tg-status{position:relative;flex:none;height:52px;display:flex;align-items:center;justify-content:space-between;padding:6px 26px 0 40px;color:#fff;font-size:15px;font-weight:600;background:#17212B}
+.tg-island{position:absolute;left:50%;top:11px;width:106px;height:31px;margin-left:-53px;border-radius:16px;background:#000;box-shadow:inset 0 0 0 1px #111}
+.tg-island::after{content:"";position:absolute;right:11px;top:50%;width:10px;height:10px;margin-top:-5px;border-radius:50%;background:radial-gradient(circle at 40% 40%,#2a3550 0,#0b0d14 55%,#000 100%)}
+.tg-time{font-size:16px;font-weight:600;letter-spacing:-.01em}
 .tg-ic{display:flex;align-items:center;gap:6px}
 .tg-ic svg{width:17px;height:12px;fill:#fff}
 .tg-bat{position:relative;width:25px;height:12px;border:1.5px solid rgba(255,255,255,.55);border-radius:4px;padding:1.5px}
@@ -572,7 +584,7 @@ textarea.inp{min-height:96px;resize:vertical;line-height:1.5}
 /* демо-бот: настоящее мини-приложение в телефоне */
 .tg-app{background:#F6F1EC}
 .tg-status.light{background:#F6F1EC;color:#2A2321}
-.tg-status.light .tg-ic{font-size:11px;letter-spacing:1px}
+.tg-status.light .tg-ic svg{fill:#2A2321}.tg-status.light .tg-bat{border-color:rgba(42,35,33,.45)}.tg-status.light .tg-bat::after{background:rgba(42,35,33,.45)}.tg-status.light .tg-bat i{background:#2A2321}
 .tg-apphead{flex:none;display:grid;grid-template-columns:70px 1fr 70px;align-items:center;padding:2px 14px 10px;background:#F6F1EC;color:#2A2321;font-size:14px;border-bottom:1px solid rgba(42,35,33,.08)}
 .tg-apphead span{color:#9A6457}.tg-apphead span:last-child{text-align:right;font-size:18px}
 .tg-apphead b{text-align:center;font-weight:600}

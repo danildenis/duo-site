@@ -2,19 +2,30 @@
 (() => {
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  // знак duo на главной — видео из After Effects (motion/hero-logo). Остальной экран ждёт старта видео
-  const hero = document.querySelector('.hero'), v = document.getElementById('logoVideo');
-  if (hero && v) {
+  // знак duo на главной: из-под строки поднимаются du и o, потом сверху падают и отскакивают точки
+  const hero = document.querySelector('.hero'), mark = hero && hero.querySelector('.mark');
+  if (hero && mark) {
+    const playMark = () => {
+      const q = c => mark.querySelector(c), soft = 'cubic-bezier(.16,1,.3,1)', fall = 'cubic-bezier(.55,0,1,.45)', up = 'cubic-bezier(0,.55,.45,1)';
+      const rise = (el, delay) => el.animate([{ transform: 'translateY(1250px)' }, { transform: 'translateY(0)' }], { delay, duration: 1150, easing: soft, fill: 'both' });
+      const drop = (el, delay, h) => el.animate([
+        { transform: `translateY(${-h}px) scale(1,1)`, opacity: 0, offset: 0, easing: fall },
+        { opacity: 1, offset: .12 },
+        { transform: 'translateY(0) scale(1.14,.82)', opacity: 1, offset: .4, easing: 'ease-out' },
+        { transform: 'translateY(0) scale(1,1)', offset: .46, easing: up },
+        { transform: 'translateY(-210px) scale(.97,1.04)', offset: .62, easing: fall },
+        { transform: 'translateY(0) scale(1.07,.92)', offset: .78, easing: 'ease-out' },
+        { transform: 'translateY(0) scale(1,1)', offset: .82, easing: up },
+        { transform: 'translateY(-58px) scale(1,1)', offset: .9, easing: fall },
+        { transform: 'translateY(0) scale(1.02,.98)', offset: .97 },
+        { transform: 'translateY(0) scale(1,1)', opacity: 1, offset: 1 }], { delay, duration: 1150, fill: 'both' });
+      q('.base').animate([{ transform: 'scaleX(0)', opacity: 1, offset: 0 }, { transform: 'scaleX(1)', opacity: 1, offset: .3 }, { transform: 'scaleX(1)', opacity: 1, offset: .7 }, { transform: 'scaleX(1)', opacity: 0 }], { duration: 1600, easing: soft, fill: 'both' });
+      rise(q('.rDu'), 260); rise(q('.rO'), 400); drop(q('.dL'), 1000, 1100); drop(q('.dR'), 1260, 1200);
+    };
     let go = false;
-    const start = still => { if (go) return; go = true; if (still) hero.classList.add('still'); hero.classList.remove('wait'); document.body.classList.remove('wait'); };
-    if (reduce) { v.removeAttribute('autoplay'); v.pause(); start(true); }
-    else {
-      if (!v.paused && v.currentTime > 0) start(false);
-      v.addEventListener('playing', () => start(false), { once: true });
-      v.querySelector('source:last-of-type').addEventListener('error', () => start(true));
-      const pr = v.play(); if (pr) pr.catch(() => start(true));
-      setTimeout(() => { if (v.paused) start(true); }, 1200);
-    }
+    const start = () => { if (go) return; go = true; if (!reduce) playMark(); hero.classList.remove('wait'); document.body.classList.remove('wait'); };
+    if (document.readyState === 'complete') requestAnimationFrame(start); else addEventListener('load', () => requestAnimationFrame(start), { once: true });
+    setTimeout(start, 1500);
   }
 
   // меню в вырезе: на телефоне открывается по нажатию

@@ -136,17 +136,23 @@ const header = (R, cur) => `<header class="notch" id="notch">
   <div class="menu-m">${nav(R, cur, [['', 'Главная'], ...NAV_L, ...NAV_R])}<a class="tg-link" href="${TG_APP}" target="_blank" rel="noopener">${TG} Открыть в Telegram</a><a class="btn white" href="${R}zayavka/">${CTA}</a></div>
 </header>`;
 
+// Подвал: меню здесь не повторяем — оно всегда есть в вырезе сверху. Подвал только про связь и документы.
+const CONTACTS = [
+  [TG_APP, 'Рассчитать в Telegram', 'приложение DUO'],
+  ['https://t.me/duodevops_bot', 'Написать боту', '@duodevops_bot'],
+  ['https://t.me/duodevops', 'Telegram-канал', '@duodevops'],
+  ['https://instagram.com/duo_devops', 'Instagram', '@duo_devops'],
+];
 const footer = R => `<footer class="foot dark" id="contacts">
   <div class="wrap foot-grid">
-    <div>
+    <div class="foot-say">
       <div class="mk" aria-hidden="true"></div>
-      <p>Делаем сайты и Telegram-ботов для бизнеса. Напишите нам в Telegram или посчитайте стоимость в боте — ответим и подскажем, с чего начать.</p>
-      <p class="legal"><a href="${R}privacy/">Политика обработки персональных данных</a></p>
+      <h2>Мы на связи <em>в Telegram</em></h2>
+      <p>Отвечаем сами, без менеджеров. Делаем сайты и Telegram-ботов для бизнеса.</p>
     </div>
-    <div><h4>Разделы</h4><ul>${[['raboty/', 'Работы'], ['uslugi/', 'Услуги'], ['ceny/', 'Цены'], ['process/', 'Процесс'], ['#faq', 'Вопросы'], ['razbor/', 'Разбор сайта'], ['o-nas/', 'О нас'], ['zayavka/', 'Заявка']].map(([h, t]) => `<li><a href="${href(R, h)}">${t}</a></li>`).join('')}</ul></div>
-    <div><h4>Связь</h4><ul><li><a href="${TG_APP}" target="_blank" rel="noopener">Приложение в Telegram</a></li><li><a href="https://t.me/duodevops_bot" target="_blank" rel="noopener">Бот @duodevops_bot</a></li><li><a href="https://t.me/duodevops" target="_blank" rel="noopener">Telegram-канал</a></li><li><a href="https://instagram.com/duo_devops" target="_blank" rel="noopener">Instagram</a></li></ul></div>
+    <ul class="foot-links">${CONTACTS.map(([h, t, s]) => `<li><a href="${h}" target="_blank" rel="noopener"><b>${t}</b><span>${s}</span>${ARROW}</a></li>`).join('')}</ul>
   </div>
-  <div class="endbar"><span>Websites · Products · Automation</span><b>duo</b><span>© 2026 · Два человека. Один результат.</span></div>
+  <div class="endbar"><span>© 2026 · Два человека. Один результат.</span><b>duo</b><a href="${R}privacy/">Политика обработки данных</a></div>
 </footer>`;
 
 const layout = ({ R, path, title, desc, body, home }) => `<!doctype html>

@@ -90,14 +90,17 @@ const FAQ = [
 ];
 // Вопросы на главной: облако «таблеток». Блок закреплён на экране, таблетки проявляются из размытия по одной,
 // пока его прокручиваешь (как на 13322566869.com). Нажали — ответ под облаком. #faq стоит там, где все уже видны.
+// таблетка: чёткий слой и заранее размытая копия. При прокрутке меняется только прозрачность — без покадрового
+// пересчёта размытия (из-за него на краях таблеток мелькали цветные полоски)
+const pill = q => `<span class="ps">${q}</span><span class="pb" aria-hidden="true">${q}</span>`;
 const faq = R => `<section class="faq dark" aria-labelledby="faqT">
   <i class="faq-anchor" id="faq" aria-hidden="true"></i>
   <div class="faq-pin">
     <div class="wrap">
       <h2 class="label" id="faqT">Частые вопросы</h2>
       <div class="pills">
-        ${FAQ.map(([q], i) => `<button class="pill" type="button" data-i="${i}" aria-expanded="false" aria-controls="faqA">${q}</button>`).join('\n        ')}
-        <a class="pill ask" href="${TG_APP}" target="_blank" rel="noopener">${TG} Свой вопрос — в Telegram</a>
+        ${FAQ.map(([q], i) => `<button class="pill" type="button" data-i="${i}" aria-expanded="false" aria-controls="faqA">${pill(q)}</button>`).join('\n        ')}
+        <a class="pill ask" href="${TG_APP}" target="_blank" rel="noopener">${pill(`${TG} Свой вопрос — в Telegram`)}</a>
       </div>
       <div class="faq-a" id="faqA" aria-live="polite"><p class="hint">Нажмите на вопрос — ответ появится здесь</p></div>
     </div>

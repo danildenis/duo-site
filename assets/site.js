@@ -113,7 +113,11 @@
         lastP = p;
         pills.forEach((el, i) => {
           const o = Math.min(1, Math.max(0, (p - faqWin[i]) / .13));
-          el.style.opacity = o.toFixed(3); el.style.filter = o >= 1 ? 'none' : `blur(${((1 - o) * 10).toFixed(2)}px)`;
+          // сначала проступает размытая копия, потом её сменяет чёткая таблетка
+          el.style.opacity = Math.min(1, o / .35).toFixed(3);
+          const sharp = Math.min(1, Math.max(0, (o - .4) / .6)), soft = 1 - Math.min(1, Math.max(0, (o - .6) / .4));
+          el.firstChild.style.opacity = (sharp * sharp * (3 - 2 * sharp)).toFixed(3);
+          el.lastChild.style.opacity = soft.toFixed(3); el.lastChild.style.visibility = o >= 1 ? 'hidden' : '';
         });
         faqOut.style.opacity = Math.min(1, Math.max(0, (p - .56) / .08)).toFixed(3);
       }

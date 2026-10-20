@@ -623,13 +623,16 @@ textarea.inp{min-height:96px;resize:vertical;line-height:1.5}
 .faq-anchor{position:absolute;left:0;top:0}
 .faq .label{display:block;margin:0 0 clamp(20px,2.6vw,36px);text-align:center;color:var(--t3);font-size:13px;line-height:1.4}
 .pills{display:flex;flex-wrap:wrap;justify-content:center;gap:clamp(6px,.7vw,12px);max-width:1240px;margin-inline:auto}
-.pill{font:inherit;font-weight:300;font-size:clamp(17px,min(2.6vw,4.4svh),42px);line-height:1.12;letter-spacing:-.025em;color:var(--t);
-  background:none;border:1px solid rgba(242,243,245,.62);border-radius:999px;padding:.2em .62em .24em;cursor:pointer;text-align:center;
-  transition:background .35s var(--ease),color .35s,border-color .35s;-webkit-tap-highlight-color:transparent}
-.pill:hover{border-color:var(--t)}
-.pill[aria-expanded=true]{background:var(--t);color:var(--ink);border-color:var(--t)}
-.pill.ask{display:inline-flex;align-items:center;gap:.4em;color:var(--t2);background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.14)}
-.pill.ask:hover{color:var(--t);border-color:rgba(255,255,255,.3)}
+.pill{position:relative;display:inline-flex;font:inherit;font-weight:300;font-size:clamp(17px,min(2.6vw,4.4svh),42px);line-height:1.12;letter-spacing:-.025em;color:var(--t);
+  background:none;border:0;border-radius:999px;padding:0;cursor:pointer;text-align:center;-webkit-tap-highlight-color:transparent}
+.pill .ps,.pill .pb{display:inline-flex;align-items:center;justify-content:center;gap:.4em;border:1px solid rgba(242,243,245,.62);border-radius:999px;padding:.2em .62em .24em}
+.pill .ps{transition:background .35s var(--ease),color .35s,border-color .35s}
+.pill .pb{display:none;position:absolute;inset:0;filter:blur(10px);pointer-events:none}
+.pill:hover .ps{border-color:var(--t)}
+.pill[aria-expanded=true] .ps{background:var(--t);color:var(--ink);border-color:var(--t)}
+.pill.ask{color:var(--t2)}
+.pill.ask .ps,.pill.ask .pb{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.14)}
+.pill.ask:hover .ps{color:var(--t);border-color:rgba(255,255,255,.3)}
 .pill.ask .tgi{width:.8em;height:.8em;flex:none}
 .faq-a{max-width:760px;min-height:7.5em;margin:clamp(22px,3vw,40px) auto 0;text-align:center;font-size:16px;line-height:1.6;color:var(--t2)}
 .faq-a p{margin:0 0 8px}
@@ -641,6 +644,8 @@ textarea.inp{min-height:96px;resize:vertical;line-height:1.5}
 .faq.scrub{height:270svh;padding-block:0}
 .faq.scrub .faq-pin{position:sticky;top:0;height:100svh;display:flex;flex-direction:column;justify-content:center;padding-top:calc(var(--fw) + 52px);overflow:hidden}
 .faq.scrub .faq-anchor{top:calc((100% - 100svh) * .66)}
-.faq.scrub .pill{opacity:0;filter:blur(10px)}
-.faq.scrub .pill:focus-visible{opacity:1!important;filter:none!important}
+.faq.scrub .pill{opacity:0}
+.faq.scrub .pill .pb{display:inline-flex}
+.faq.scrub .pill .ps{opacity:0}
+.faq.scrub .pill:focus-visible,.faq.scrub .pill:focus-visible .ps{opacity:1!important}
 @media (max-width:600px){.faq.scrub{height:230svh}.pills{gap:6px}.pill{font-size:clamp(16px,4.6vw,20px)}.faq-a{font-size:15px;min-height:9em}}
